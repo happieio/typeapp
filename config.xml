@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="com.TypeApp" version="1.0.0" ios-CFBundleVersion="1" android-versionCode="1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>TypeApp</name>
+  <description>
+        TypeSafe Ionic Development
+    </description>
+  <author email="thisjustosay@gmail.com" href="http://happie.io/">
+        James Spencer
+    </author>
+  <content src="index.html"/>
+  <access origin="*"/>
+  <access origin="maps:*" launch-external="yes"/>
+  <preference name="webviewbounce" value="false"/>
+  <preference name="UIWebViewBounce" value="false"/>
+  <preference name="DisallowOverscroll" value="true"/>
+  <preference name="BackupWebStorage" value="local"/>
+  <preference name="Orientation" value="default"/>
+  <preference name="SplashScreen" value="screen"/>
+  <preference name="SplashScreenDelay" value="3000"/>
+  <preference name="SplashMaintainAspectRatio" value="false"/>
+  <preference name="deployment-target" value="7.0"/>
+  <preference name="android-minSdkVersion" value="16"/>
+  <preference name="AndroidPersistentFileLocation" value="Internal"/>
+  <preference name="iosPersistentFileLocation" value="Library"/>
+  <platform name="android">
+  </platform>
+  <platform name="ios">
+  </platform>
+  <engine name="android" spec="4.0.0"/>
+  <engine name="ios" spec="3.9.0"/>
+</widget>

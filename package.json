@@ -1,0 +1,73 @@
+{
+  "name": "TypeApp",
+  "version": "1.0.0",
+  "description": "Type Safe Ionic Development",
+  "license": "MIT",
+  "homepage": "http://happie.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/happieio/typeapp.git"
+  },
+  "dependencies": {
+    "cordova": "5.1.1",
+    "execSync": "*",
+    "gulp": "*",
+    "gulp-concat": "*",
+    "gulp-dest": "^0.2.2",
+    "gulp-exit": "0.0.2",
+    "gulp-minify-css": "^1.1.0",
+    "gulp-rimraf": "*",
+    "gulp-sass": "^2.0.0-alpha.1",
+    "gulp-sourcemaps": "*",
+    "gulp-typescript": "^2.8.2",
+    "gulp-uglify": "*",
+    "gulp-util": "^3.0.6",
+    "inherits": "^2.0.1",
+    "ionic": "1.6.4",
+    "ios-deploy": "1.7.0",
+    "ios-sim": "4.1.1",
+    "lodash": "^3.10.1",
+    "replace": "^0.3.0",
+    "requirejs": "^2.1.20",
+    "run-sequence": "^1.1.0",
+    "shell": "0.3.2",
+    "shelljs": "^0.4.0"
+  },
+  "devDependencies": {
+    "amdclean": "^2.7.0",
+    "bower": "1.4.1",
+    "chai": "*",
+    "map-stream": "*",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "app-init": "sudo npm install -g cordova ionic; sudo npm install -g gulp; sudo npm install -bower; sudo npm update; bower update; gulp cordova:reset gulp default"
+  },
+  "cordovaPlugins": [
+    "com.ionic.keyboard",
+    "https://github.com/apache/cordova-plugin-whitelist.git",
+    "https://github.com/jfspencer/jobnimbus-modern-camera.git",
+    "https://github.com/driftyco/cordova-camera-roll.git",
+    "https://github.com/couchbaselabs/Couchbase-Lite-PhoneGap-Plugin.git",
+    "org.apache.cordova.console",
+    "org.apache.cordova.device",
+    "org.apache.cordova.file-transfer",
+    "org.apache.cordova.statusbar",
+    "org.apache.cordova.network-information",
+    "cordova-plugin-network-information",
+    "cordova-plugin-whitelist",
+    "org.apache.cordova.splashscreen"
+  ],
+  "cordovaPlatforms": [
+    {
+      "platform": "ios",
+      "version": "3.9.0",
+      "locator": "ios@3.9.0"
+    },
+    {
+      "platform": "android",
+      "version": "4.1.0",
+      "locator": "android@4.1.0"
+    }
+  ]
+}
