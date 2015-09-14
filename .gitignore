@@ -8,3 +8,4 @@ www/
 src/-vendor/
 .idea/
 srcCompiled/
+src/**/*.js
