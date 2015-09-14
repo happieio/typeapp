@@ -8,11 +8,11 @@
 import dashController = require('comp/dashboard/controller');
 
 class Dashboard {
-    static moduleName = () =>  'jn.dashboard';
+    static moduleName =  'jn.dashboard';
 }
 
-angular.module(Dashboard.moduleName(), [
-    dashController.moduleName()
+angular.module(Dashboard.moduleName, [
+    dashController.moduleName
 ]);
 
 export = Dashboard;

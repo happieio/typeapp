@@ -3,12 +3,12 @@
 import searchBar = require('lib/directives/searchbar/searchbardirective');
 
 class jnLibDirectives {
-    static moduleName = () => 'directivesModule';
+    static moduleName = 'directivesModule';
 }
 
 export = jnLibDirectives;
 
-angular.module(jnLibDirectives.moduleName(), [
-    searchBar.moduleName()
+angular.module(jnLibDirectives.moduleName, [
+    searchBar.moduleName
 ]);
 

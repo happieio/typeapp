@@ -10,11 +10,11 @@ import dashboardState = require('app/state/dashboard');
 
 
 class menuController {
-    static moduleName = () => 'jnMenuCtrl';
-    static templateUrl = () => 'comp/menu/menu.tpl.html';
+    static moduleName = 'jnMenuCtrl';
+    static templateUrl = 'comp/menu/menu.tpl.html';
 
-    static menuCtrl = angular.module(menuController.moduleName(), [])
-        .controller(menuController.moduleName(), [con.ng.$scope(), con.ng.$state(), ($scope, $state) => {
+    static menuCtrl = angular.module(menuController.moduleName, [])
+        .controller(menuController.moduleName, [con.ng.$scope, con.ng.$state, ($scope, $state) => {
 
             $scope.goToContacts = () => {
               $state.go(contactState.state.name);

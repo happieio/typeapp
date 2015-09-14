@@ -2,13 +2,13 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 class generalFilterHelpers {
-    static moduleName = () => 'jnLib.filters.filterHelpers';
+    static moduleName = 'jnLib.filters.filterHelpers';
 }
 
 export = generalFilterHelpers;
 
-angular.module(generalFilterHelpers.moduleName(), [])
-    .factory(generalFilterHelpers.moduleName(), ['_', filterHelpers]);
+angular.module(generalFilterHelpers.moduleName, [])
+    .factory(generalFilterHelpers.moduleName, ['_', filterHelpers]);
 function filterHelpers(_) {
     var publicAPI = {
         statusFilter: statusFilter,

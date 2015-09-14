@@ -12,8 +12,8 @@ class Contact {
         url: '/contact',
         views: {
             menuContent: {
-                templateUrl: ContactController.templateUrl(),
-                controller: ContactController.moduleName()
+                templateUrl: ContactController.templateUrl,
+                controller: ContactController.moduleName
             }
         }
     };

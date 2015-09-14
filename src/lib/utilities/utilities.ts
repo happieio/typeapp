@@ -4,11 +4,11 @@ import lodash = require('lib/utilities/lodash');
 
 
 class jnLibUtilities {
-    static moduleName = () => 'jnLib.utilities';
+    static moduleName = 'jnLib.utilities';
 
 
-    static jnLibUtil = angular.module(jnLibUtilities.moduleName(), [
-        lodash.moduleName()
+    static jnLibUtil = angular.module(jnLibUtilities.moduleName, [
+        lodash.moduleName
     ]);
 }
 

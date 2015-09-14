@@ -1,14 +1,14 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 class lengthFilter {
-    static moduleName = () => 'jnLib.util.lengthCheck';
-    static filterName = () => 'lengthCheck';
+    static moduleName = 'jnLib.util.lengthCheck';
+    static filterName = 'lengthCheck';
 }
 
 export = lengthFilter;
 
-angular.module(lengthFilter.moduleName(), [])
-    .filter(lengthFilter.filterName(), function () {
+angular.module(lengthFilter.moduleName, [])
+    .filter(lengthFilter.filterName, function () {
         return function (name, len) {
             if (name) {
                 name = name.trim();

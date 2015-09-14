@@ -5,14 +5,14 @@
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
 class dalService {
-    static moduleName = () => 'dataDalService';
+    static moduleName = 'dataDalService';
 }
 
 export = dalService;
 
 
-angular.module(dalService.moduleName(), [])
-    .factory(dalService.moduleName(), [dal]);
+angular.module(dalService.moduleName, [])
+    .factory(dalService.moduleName, [dal]);
 
 function dal() {
     //ADD YOUR DATA ACCESS LAYER HERE

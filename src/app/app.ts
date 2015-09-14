@@ -13,16 +13,16 @@ import con = require('app/constants');
 import states = require('./state/allstates');
 
 class app {
-    static moduleName = () => 'typeApp';
+    static moduleName = 'typeApp';
 
-    static appMain = angular.module(app.moduleName(), [
-        vendorComponents.moduleName(),
-        lib.moduleName(),
-        appComponents.moduleName()
+    static appMain = angular.module(app.moduleName, [
+        vendorComponents.moduleName,
+        lib.moduleName,
+        appComponents.moduleName
     ]).config([
-        con.ionic.$ionicConfigProvider(),
-        con.ng.$urlRouterProvider(),
-        con.ng.$stateProvider(),
+        con.ionic.$ionicConfigProvider,
+        con.ng.$urlRouterProvider,
+        con.ng.$stateProvider,
         function ($ionicConfigProvider, $urlRouterProvider, $stateProvider) {
 
             $ionicConfigProvider.platform.android.scrolling.jsScrolling(false);
@@ -37,7 +37,7 @@ class app {
                 .state(states.Menu.state);
         }])
 
-        .run([con.ionic.$ionicPlatform(), con.plugins.$cordovaKeyboard(),
+        .run([con.ionic.$ionicPlatform, con.plugins.$cordovaKeyboard,
             function ($ionicPlatform, $cordovaKeyboard) {
                 $ionicPlatform.ready(function () {
 

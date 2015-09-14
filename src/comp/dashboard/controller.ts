@@ -10,12 +10,12 @@ import con = require('app/constants');
 import contactState = require('app/state/contact');
 
 class dashboardController {
-    static moduleName = () =>  'jnDashboardCtrl';
-    static templateUrl = () =>  'comp/dashboard/dashboard.tpl.html';
+    static moduleName = 'jnDashboardCtrl';
+    static templateUrl = 'comp/dashboard/dashboard.tpl.html';
 
-    static dashController = angular.module(dashboardController.moduleName(), [])
-        .controller(dashboardController.moduleName(),
-        [con.ng.$scope(), con.vendorModules._(), con.ng.$state(),
+    static dashController = angular.module(dashboardController.moduleName, [])
+        .controller(dashboardController.moduleName,
+        [con.ng.$scope, con.vendorModules._, con.ng.$state,
             ($scope, _, $state) => {
 
                 $scope.navToContacts = () => {

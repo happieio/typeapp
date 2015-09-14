@@ -5,14 +5,14 @@ import lengthCheck = require('lib/filters/lengthcheck');
 import twoletters = require('lib/filters/twoletters');
 
 class jnLibFilter {
-    static moduleName = () => 'jnLib.filters';
+    static moduleName = 'jnLib.filters';
 }
 
 export = jnLibFilter;
 
-angular.module(jnLibFilter.moduleName(), [
-    filterHelpers.moduleName(),
-    lengthCheck.moduleName(),
-    twoletters.moduleName()
+angular.module(jnLibFilter.moduleName, [
+    filterHelpers.moduleName,
+    lengthCheck.moduleName,
+    twoletters.moduleName
 ]);
 

@@ -23,13 +23,14 @@ import data = require('lib/data/data');
 
 
 class jnLib {
-    static moduleName = () => 'jn.lib';
+    static moduleName = 'jn.lib';
 
-    static jnLib = angular.module(jnLib.moduleName(), [
-    utilities.moduleName(),
-    filters.moduleName(),
-    directives.moduleName(),
-    data.moduleName()]);
+    static jnLib = angular.module(jnLib.moduleName, [
+    utilities.moduleName,
+    filters.moduleName,
+    directives.moduleName,
+    data.moduleName
+    ]);
 
 }
 

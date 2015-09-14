@@ -11,12 +11,12 @@ import con = require('app/constants');
 import contactDetails = require('app/state/contact-details');
 
 class contactController {
-    static moduleName = () => 'jnContactCtrl';
-    static templateUrl = () =>  'comp/contact/contact.tpl.html';
+    static moduleName = 'jnContactCtrl';
+    static templateUrl =  'comp/contact/contact.tpl.html';
 
-    static contactCtrl = angular.module(contactController.moduleName(), [])
-        .controller(contactController.moduleName(),
-        [con.ng.$scope(), con.vendorModules._(), con.ng.$state(),
+    static contactCtrl = angular.module(contactController.moduleName, [])
+        .controller(contactController.moduleName,
+        [con.ng.$scope, con.vendorModules._, con.ng.$state,
             function ($scope, _, $state) {
                 $scope.hello = 'Hello World';
 

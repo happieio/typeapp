@@ -4,11 +4,11 @@
 import menuController = require('comp/menu/controller');
 
 class menu {
-    static moduleName = () => 'jn.menu';
+    static moduleName = 'jn.menu';
 }
 
-angular.module(menu.moduleName(), [
-    menuController.moduleName()
+angular.module(menu.moduleName, [
+    menuController.moduleName
 ]);
 
 export = menu;

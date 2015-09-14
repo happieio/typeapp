@@ -7,13 +7,13 @@
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
 class searchBarDirective  {
-    static moduleName = () => 'jnSearchBar';
+    static moduleName = 'jnSearchBar';
 }
 
 export = searchBarDirective;
 
-angular.module(searchBarDirective.moduleName(), [])
-    .directive(searchBarDirective.moduleName(), [jnSearchBar]);
+angular.module(searchBarDirective.moduleName, [])
+    .directive(searchBarDirective.moduleName, [jnSearchBar]);
 
 function jnSearchBar() {
     return {

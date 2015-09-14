@@ -12,8 +12,8 @@ class Menu {
         url: '/menu',
         views: {
             menuContent: {
-                templateUrl: menuController.templateUrl(),
-                controller: menuController.moduleName()
+                templateUrl: menuController.templateUrl,
+                controller: menuController.moduleName
             }
         }
     };

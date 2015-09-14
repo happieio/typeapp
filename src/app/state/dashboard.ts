@@ -12,8 +12,8 @@ class Dashboard {
         url: '/dashboard',
         views: {
             menuContent: {
-                templateUrl: DashboardController.templateUrl(),
-                controller: DashboardController.moduleName()
+                templateUrl: DashboardController.templateUrl,
+                controller: DashboardController.moduleName
             }
         }
     };

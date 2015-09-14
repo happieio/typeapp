@@ -46,12 +46,8 @@
   "cordovaPlugins": [
     "com.ionic.keyboard",
     "https://github.com/apache/cordova-plugin-whitelist.git",
-    "https://github.com/jfspencer/jobnimbus-modern-camera.git",
-    "https://github.com/driftyco/cordova-camera-roll.git",
-    "https://github.com/couchbaselabs/Couchbase-Lite-PhoneGap-Plugin.git",
     "org.apache.cordova.console",
     "org.apache.cordova.device",
-    "org.apache.cordova.file-transfer",
     "org.apache.cordova.statusbar",
     "org.apache.cordova.network-information",
     "cordova-plugin-network-information",
@@ -59,11 +55,7 @@
     "org.apache.cordova.splashscreen"
   ],
   "cordovaPlatforms": [
-    {
-      "platform": "ios",
-      "version": "3.9.0",
-      "locator": "ios@3.9.0"
-    },
+    "ios",
     {
       "platform": "android",
       "version": "4.1.0",
