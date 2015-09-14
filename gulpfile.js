@@ -119,7 +119,7 @@ gulp.task('vendor', function () {
 });
 
 gulp.task('ts:app', function () {
-    gulp.src('').pipe(shell(['node r.js -o app.build.js']));
+    gulp.src('').pipe(shell(['./node_modules/.bin/r.js -o ./app.build.js']));
 });
 
 gulp.task('styles', function () {
