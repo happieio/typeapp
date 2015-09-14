@@ -8,14 +8,18 @@ class contactDetailsController {
 
     static contactDetails = angular.module(contactDetailsController.moduleName, [])
         .controller(contactDetailsController.moduleName,
-        [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory,
-            ($scope, $stateParams, $ionicHistory) => {
+        [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory, con.ng.$state,
+            ($scope, $stateParams, $ionicHistory, $state) => {
 
                 $scope.name = $stateParams.name;
 
                 $scope.goBack = () => {
                   $ionicHistory.goBack();
                 };
+
+                $scope.goToMoreDetails = () => {
+                    $state.go('app.contactDetailsDetails');
+                }
 
             }]);
 }

@@ -33,6 +33,7 @@ class app {
                 .state(states.App.state)
                 .state(states.Contact.state)
                 .state(states.ContactDetails.state)
+                .state(states.ContactDetailsDetails.state)
                 .state(states.Dashboard.state)
                 .state(states.Menu.state);
         }])
