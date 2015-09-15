@@ -42,7 +42,7 @@ class app {
             function ($ionicPlatform, $cordovaKeyboard) {
                 $ionicPlatform.ready(function () {
 
-                    //ALL YOUR RUNTIME CONFIGS HERE
+                    //ALL YOUR INIT LOGIC HERE
                     $cordovaKeyboard.hideAccessoryBar(false);
                     $cordovaKeyboard.disableScroll(true);
                 });
