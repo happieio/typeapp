@@ -8,7 +8,7 @@ first ensure all Android/iOS dependencies are installed
 
 -----------
 
-    npm run init-app 
+    npm run app-init 
     
 downloads and setup cordova/ionic and all the project dependencies and prep the www folder.
 
