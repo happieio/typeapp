@@ -3,22 +3,32 @@
 import con = require('app/constants');
 
 class contactDetailsController {
-    static moduleName =  'jnContactDetailsDetailsCtrl';
-    static templateUrl =  'comp/contactdetails/details/contactdetails.tpl.html';
+    static moduleName =  'contactDetailsDetailsController';
+    static templateUrl =  'comp/contactdetails/details/view.tpl.html';
 
-    static contactDetails = angular.module(contactDetailsController.moduleName, [])
-        .controller(contactDetailsController.moduleName,
-        [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory,
-            ($scope, $stateParams, $ionicHistory) => {
+    name;
 
-                $scope.name = $stateParams.name;
+    $scope;
+    $stateParams;
+    $ionicHistory;
 
-                $scope.goBack = () => {
-                  $ionicHistory.goBack();
-                };
+    static $injector = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory];
+    constructor($scope, $stateParams, $ionicHistory){
+        this.$scope = $scope;
+        this.$stateParams = $stateParams;
+        this.$ionicHistory = $ionicHistory;
 
-            }]);
+        this.$scope.vm = this;
+
+        this.name = this.$stateParams.name;
+    }
+
+    goBack() {
+        this.$ionicHistory.goBack();
+    }
+
 }
 
+angular.module(contactDetailsController.moduleName, []).controller(contactDetailsController.moduleName, contactDetailsController);
 export = contactDetailsController;
 

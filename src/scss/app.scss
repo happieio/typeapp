@@ -33,7 +33,6 @@ $bar-default-border: rgb(69,180,218);
 $ionicons-font-path: "../-vendor/ionicons/fonts" !default;
 @import "../-vendor/ionic/scss/ionic",
 "../-vendor/ionicons/scss/ionicons",
-"../comp/contact/contact",
-"../comp/dashboard/dashboard",
-"../comp/contactdetails/contactdetails"
+"../comp/def",
+"../lib/directives/def"
 ;

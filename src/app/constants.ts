@@ -1,51 +1,87 @@
-/* TYPE DEFS */
 /// <reference path="../typedefs/tsd.d.ts" />
 
 class constants {
 
-    static GLOBAL_STATIC_VAR =  'The constant here';
-    static UTS_MULT =   1000;
-
-    /**
-     * These are a single source of truth for angular component names. make sure the component you want to use
-     * has its module registered in src/app/vendor.ts
-     */
     static ng = {
-        $rootScope:  '$rootScope',
-        $scope:  '$scope',
-        $state:   '$state',
-        $stateParams:  '$stateParams',
-        $stateProvider:  '$stateProvider',
-        $templateCache:  '$templateCache',
-        $urlRouterProvider :  '$urlRouterProvider',
-        $window:   '$window'
+        $attrs: '$attrs',
+        $compileProvider: '$compileProvider',
+        $delegate: '$delegate',
+        $filter: '$filter',
+        $http: '$http',
+        $httpProvider: '$httpProvider',
+        $interval: '$interval',
+        $log: '$log',
+        $logProvider: '$logProvider',
+        $provide: '$provide',
+        $q: '$q',
+        $rootScope: '$rootScope',
+        $sceDelegateProvider: '$sceDelegateProvider',
+        $scope: '$scope',
+        $state: '$state',
+        $stateParams: '$stateParams',
+        $stateProvider: '$stateProvider',
+        $templateCache: '$templateCache',
+        $timeout: '$timeout',
+        $urlRouterProvider: '$urlRouterProvider',
+        $window: '$window',
+        events: {
+            destroy: '$destroy'
+        }
     };
 
     static ionic = {
-        ionic :  'ionic',
-        $ionicConfigProvider:  '$ionicConfigProvider',
-        $ionicHistory:  '$ionicHistory',
-        $ionicModal :  '$ionicModal',
-        $ionicPlatform :  '$ionicPlatform',
+        ionic: 'ionic',
+        $ionicActionSheet: '$ionicActionSheet',
+        $ionicConfigProvider: '$ionicConfigProvider',
+        $ionicHistory: '$ionicHistory',
+        $ionicLoading: '$ionicLoading',
+        $ionicModal: '$ionicModal',
+        $ionicPlatform: '$ionicPlatform',
+        $ionicPopover: '$ionicPopover',
+        $ionicPopup: '$ionicPopup',
+        $ionicPosition: '$ionicPosition',
+        $ionicScrollDelegate: '$ionicScrollDelegate',
+        $ionicSideMenuDelegate: '$ionicSideMenuDelegate',
+        $ionicSlideBoxDelegate: '$ionicSlideBoxDelegate',
         events: {
-            $ionicViewBeforeEnter:  '$ionicView.beforeEnter'
+            afterEnter: '$ionicView.afterEnter',
+            beforeEnter: '$ionicView.beforeEnter',
+            beforeLeave: '$ionicView.beforeLeave',
+            enter: '$ionicView.enter',
+            loaded: '$ionicView.loaded',
+
         }
     };
 
     static plugins = {
-        $cordovaFile:   '$cordovaFile',
-        $cordovaKeyboard :  '$cordovaKeyboard',
-        $cordovaNetwork:  '$cordovaNetwork'
+        $cordovaFile: '$cordovaFile',
+        $cordovaFileTransfer: '$cordovaFileTransfer',
+        $cordovaKeyboard: '$cordovaKeyboard',
+        $cordovaNetwork: '$cordovaNetwork'
+    };
+
+    static pouchdb = {
+        eventChange: {
+            change: 'change',
+            complete: 'complete',
+            error: 'error'
+        },
+        eventReplicate: {
+            active: 'active',
+            change: 'change',
+            complete: 'complete',
+            denied: 'denied',
+            error: 'error',
+            paused: 'paused'
+        }
     };
 
     static vendorModules = {
-        _:  '_',
-        ngCordova:  'ngCordova',
-        uiRouter :  'ui.router'
-    };
-
-    static jn = {
-
+        angularLocalStorage: 'angularLocalStorage',
+        ngCordova: 'ngCordova',
+        ngLocale: 'ngLocale',
+        ngMessages: 'ngMessages',
+        uiRouter: 'ui.router'
     };
 
 }

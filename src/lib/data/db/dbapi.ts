@@ -5,7 +5,7 @@
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
 class dalService {
-    static moduleName = 'dataDalService';
+    static moduleName = 'dalService';
 }
 
 export = dalService;

@@ -1,10 +1,10 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
-import lodash = require('lib/utilities/lodash');
+import lodash = require('lib/util/lodash');
 
 
 class jnLibUtilities {
-    static moduleName = 'jnLib.utilities';
+    static moduleName = 'lib.utilities';
 
 
     static jnLibUtil = angular.module(jnLibUtilities.moduleName, [

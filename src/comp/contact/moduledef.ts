@@ -13,14 +13,13 @@
 import contactController = require('comp/contact/controller');
 
 class Contact {
-    static moduleName = 'jn.contact';
+    static moduleName = 'comp.contact';
 
-    static contact = angular.module(Contact.moduleName, [
-        contactController.moduleName
-    ]);
 }
 
-
+angular.module(Contact.moduleName, [
+    contactController.moduleName
+]);
 
 export = Contact;
 

@@ -22,6 +22,6 @@ function jnSearchBar() {
         scope: {
             filterSearch: '='
         },
-        templateUrl: 'jnlib/directives/searchbar/search.tpl.html'
+        templateUrl: 'jnlib/directives/searchbar/viewfrag.tpl.html'
     };
 }

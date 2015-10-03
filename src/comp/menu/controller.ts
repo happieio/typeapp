@@ -10,8 +10,8 @@ import dashboardState = require('app/state/dashboard');
 
 
 class menuController {
-    static moduleName = 'jnMenuCtrl';
-    static templateUrl = 'comp/menu/menu.tpl.html';
+    static moduleName = 'menuController';
+    static templateUrl = 'comp/menu/view.tpl.html';
 
     static menuCtrl = angular.module(menuController.moduleName, [])
         .controller(menuController.moduleName, [con.ng.$scope, con.ng.$state, ($scope, $state) => {

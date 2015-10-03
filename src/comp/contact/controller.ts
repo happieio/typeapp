@@ -8,32 +8,46 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 import con = require('app/constants');
+import lodash = require('lib/util/lodash');
 import contactDetails = require('app/state/contact-details');
 
-class contactController {
-    static moduleName = 'jnContactCtrl';
-    static templateUrl =  'comp/contact/contact.tpl.html';
-
-    static contactCtrl = angular.module(contactController.moduleName, [])
-        .controller(contactController.moduleName,
-        [con.ng.$scope, con.vendorModules._, con.ng.$state,
-            function ($scope, _, $state) {
-                $scope.hello = 'Hello World';
-
-                $scope.contacts = [
-                    {name: 'Ron' },
-                    {name: 'John'},
-                    {name: 'Cron'}
-                ];
-
-                $scope.goToDetails = (contact:{name:string}) => {
-                    $state.go(contactDetails.state.name, {name:contact.name})
-                };
-
-
-
-            }]);
-
+interface commonScope extends ng.IScope {
+    vm: any; // covers all of the additions to scope
 }
 
+class contactController {
+    static moduleName = 'contactController';
+    static templateUrl = 'comp/contact/view.tpl.html';
+
+    //scope variables
+    hello;
+    contacts;
+
+    //injected variables
+    $scope: commonScope;
+    _: _.LoDashStatic;
+    $state: angular.ui.IStateService;
+
+    static $injector = [con.ng.$scope, lodash.moduleName, con.ng.$state];
+    constructor($scope, _, $state) {
+        this.$scope = $scope;
+        this._ = _;
+        this.$state = $state;
+
+        this.$scope.vm = this;
+
+        this.hello = 'Hello World';
+        this.contacts = [
+            {name: 'Ron'},
+            {name: 'John'},
+            {name: 'Cron'}
+        ]
+    }
+
+    goToDetails(contact:{name:string}) {
+        this.$state.go(contactDetails.state.name, {name: contact.name})
+    }
+}
+
+angular.module(contactController.moduleName, []).controller(contactController.moduleName, contactController);
 export = contactController;

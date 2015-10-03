@@ -2,13 +2,13 @@
 
 /*AMD DEPENDENCY MANAGEMENT*/
 
-import contact = require('comp/contact/contact');
-import contactDetails = require('comp/contactdetails/contactdetails');
-import dashboard = require('comp/dashboard/dashboard');
-import menu = require('comp/menu/menu');
+import contact = require('comp/contact/moduledef');
+import contactDetails = require('comp/contactdetails/moduledef');
+import dashboard = require('comp/dashboard/moduledef');
+import menu = require('comp/menu/moduledef');
 
 class appComponents {
-    static moduleName = 'jn.components';
+    static moduleName = 'components';
 
     static appCompModule = angular.module(appComponents.moduleName, [
         contact.moduleName,

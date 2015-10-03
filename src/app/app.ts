@@ -1,4 +1,4 @@
-/* TYPE DEFS */
+
 /// <reference path="../typedefs/tsd.d.ts" />
 
 /* DEPENDENCY MANAGEMENT use <amd-dependency path="path/to/amd/dep"/>  */
@@ -8,46 +8,21 @@ import vendorComponents = require('app/vendor');
 import appComponents = require('comp/comp');
 import lib = require('../lib/lib');
 
+import config = require('app/config');
+import configStates = require('app/configstates');
+import configRun = require('app/configrun');
+
 /* SERVICES */
 import con = require('app/constants');
-import states = require('./state/allstates');
+
 
 class app {
     static moduleName = 'typeApp';
 
-    static appMain = angular.module(app.moduleName, [
-        vendorComponents.moduleName,
-        lib.moduleName,
-        appComponents.moduleName
-    ]).config([
-        con.ionic.$ionicConfigProvider,
-        con.ng.$urlRouterProvider,
-        con.ng.$stateProvider,
-        function ($ionicConfigProvider, $urlRouterProvider, $stateProvider) {
-
-            $ionicConfigProvider.platform.android.scrolling.jsScrolling(false);
-
-            $urlRouterProvider.otherwise(states.App.state.url + '' + states.Dashboard.state.url);
-
-            $stateProvider
-                .state(states.App.state)
-                .state(states.Contact.state)
-                .state(states.ContactDetails.state)
-                .state(states.ContactDetailsDetails.state)
-                .state(states.Dashboard.state)
-                .state(states.Menu.state);
-        }])
-
-        .run([con.ionic.$ionicPlatform, con.plugins.$cordovaKeyboard,
-            function ($ionicPlatform, $cordovaKeyboard) {
-                $ionicPlatform.ready(function () {
-
-                    //ALL YOUR INIT LOGIC HERE
-                    $cordovaKeyboard.hideAccessoryBar(false);
-                    $cordovaKeyboard.disableScroll(true);
-                });
-            }])
-
+    static appMain = angular.module(app.moduleName, [vendorComponents.moduleName, lib.moduleName, appComponents.moduleName])
+        .config(config.main)
+        .config(configStates.main)
+        .run(configRun.main)
 }
 
 export = app;
