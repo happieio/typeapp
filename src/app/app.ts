@@ -5,7 +5,7 @@
 
 /* APP COMPONENTS*/
 import vendorComponents = require('app/vendor');
-import appComponents = require('comp/comp');
+import appComponents = require('comp/moduledef');
 import lib = require('../lib/lib');
 
 import config = require('app/config');

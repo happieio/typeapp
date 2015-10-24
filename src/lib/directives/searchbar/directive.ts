@@ -1,11 +1,6 @@
-/**@class jnSearchBar
- * @desc the board directive is a customization on top of the ionic slidebox directive. jn-board
- * is composed of list(s) which are customizations on top of ion-slide. the board directive generates
- * a list of cards to put in each list. see jnCard
- */
-
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
+/** a directive example*/
 class searchBarDirective  {
     static moduleName = 'jnSearchBar';
 }

@@ -1,18 +1,14 @@
-/** @class lodash
- * @desc angular wrapper for lodash
- */
-
 /// <reference path="../../typedefs/tsd.d.ts" />
 
+/** angular wrapper for lodash */
 class lodashService {
     static moduleName = '_';
+
+    static angularModule = angular.module(lodashService.moduleName,[]).factory(lodashService.moduleName, ['$window', loDash]);
 }
 
 export = lodashService;
 
-angular.module(lodashService.moduleName,[])
-    .factory(lodashService.moduleName, ['$window', loDash]);
-function loDash($window) {
-    return $window._;
-}
+
+function loDash($window) {return $window._; }
 

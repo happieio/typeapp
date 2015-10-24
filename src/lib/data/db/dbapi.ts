@@ -1,23 +1,25 @@
-/** @class dal
- * @desc database and business model management service
- */
-
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
+import con = require('app/constants');
+
+/** database and business model management service */
 class dalService {
     static moduleName = 'dalService';
+
+    $rootScope:ng.IRootScopeService;
+
+    static $inject = [con.ng.$rootScope];
+    constructor($rootScope){
+        this.$rootScope = $rootScope; // just an example
+    }
+
+    dbMethod(){
+        var test = 2;
+        this.$rootScope.$broadcast(con.pouchdb.eventChange.change, test);
+    }
+
+    static angularModule = angular.module(dalService.moduleName, []).service(dalService.moduleName, dalService);
 }
 
 export = dalService;
-
-
-angular.module(dalService.moduleName, [])
-    .factory(dalService.moduleName, [dal]);
-
-function dal() {
-    //ADD YOUR DATA ACCESS LAYER HERE
-   var publicAPI = {};
-
-    return publicAPI;
-}
 

@@ -17,9 +17,9 @@
 /*AMD DEPENDENCY MANAGEMENT*/
 
 import filters = require('lib/filters/filters');
-import utilities = require('lib/utilities/utilities');
-import directives = require('lib/directives/directives');
-import data = require('lib/data/data');
+import utilities = require('lib/util/moduledef');
+import directives = require('lib/directives/moduledef');
+import data = require('lib/data/moduledef');
 
 
 class jnLib {

@@ -47,7 +47,8 @@ class contactController {
     goToDetails(contact:{name:string}) {
         this.$state.go(contactDetails.state.name, {name: contact.name})
     }
+
+    static angularModule = angular.module(contactController.moduleName, []).controller(contactController.moduleName, contactController);
 }
 
-angular.module(contactController.moduleName, []).controller(contactController.moduleName, contactController);
 export = contactController;
