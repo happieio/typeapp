@@ -30,4 +30,5 @@
 /// <reference path="cordova/plugins/Vibration.d.ts" />
 /// <reference path="cordova/plugins/WebSQL.d.ts" />
 /// <reference path="ionic/ionic.d.ts" />
+/// <reference path="urijs/URIjs.d.ts" />
 

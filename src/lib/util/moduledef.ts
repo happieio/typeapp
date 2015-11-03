@@ -1,6 +1,7 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 import lodash = require('lib/util/lodash');
+import uri = require('lib/util/uri');
 
 
 class jnLibUtilities {
@@ -8,7 +9,8 @@ class jnLibUtilities {
 
 
     static jnLibUtil = angular.module(jnLibUtilities.moduleName, [
-        lodash.moduleName
+        lodash.moduleName,
+        uri.moduleName
     ]);
 }
 

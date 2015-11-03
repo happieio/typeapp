@@ -24,6 +24,7 @@ var paths = {
         //pre-angular dependencies
         'src/-vendor/bluebird/js/browser/bluebird.js',
         'src/-vendor/lodash/lodash.js',
+        'src/-vendor/urijs/src/URI.min.js',
 
         //ionic-angular
         'src/-vendor/ionic/js/ionic.bundle.js',

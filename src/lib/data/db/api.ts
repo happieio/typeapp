@@ -7,16 +7,23 @@ import CBL = require('lib/data/db/cbl');
 class dalService {
     static moduleName = 'dalService';
 
-    $rootScope:ng.IRootScopeService;
+    private db:CBL;
+
+    private $rootScope:ng.IRootScopeService;
 
     static $inject = [con.ng.$rootScope];
     constructor($rootScope){
         this.$rootScope = $rootScope; // just an example
     }
 
-    dbMethod(){
-        var test = 2;
-        this.$rootScope.$broadcast(con.pouchdb.eventChange.change, test);
+    createDB(dbName){
+        this.db = new CBL(dbName);
+    }
+
+    initDB(){
+        return this.db.initDB()
+            .then((success)=>{return success; })
+            .catch((err)=>{return err; });
     }
 
     static angularModule = angular.module(dalService.moduleName, []).service(dalService.moduleName, dalService);

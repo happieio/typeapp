@@ -1,6 +1,6 @@
 ///<reference path="cbl.d.ts" />
 
-import Emitter = require('emitter');
+import Emitter = require('lib/data/db/emitter');
 
 class cblDB {
 
@@ -10,7 +10,7 @@ class cblDB {
     replicate = null;
 
     constructor(dbName) {
-        this.dbName = dbName;
+        this.dbName = dbName.replace(/[^a-z0-9$_()+-/]/g, '');
         this.replicate = {
             from: this.replicateFrom,
             to: this.replicateTo
@@ -23,9 +23,8 @@ class cblDB {
             cbl.getServerURL(
                 (url)=> {
                     this.serverUrl = url;
-                    this.dbUrl = new URI(this.serverUrl);
-                    this.dbUrl.directory(this.dbName);
-                    this.processRequest('PUT', this.dbName, null, null,
+                    this.dbUrl = new URI(this.serverUrl).directory(this.dbName);
+                    this.processRequest('PUT', this.dbUrl.toString(), null, null,
                         (err, response)=> {
                             if (err) reject(err);
                             else if (response.ok) resolve(true);
@@ -127,8 +126,8 @@ class cblDB {
         if (headers) _.forOwn(headers, (value, key)=> { http.setRequestHeader(key, value); });
 
         http.onreadystatechange = () => {
-            if (http.readyState == 4 && http.status == 200) cb(false, JSON.parse(http.responseText));
-            else cb({status: http.status, response: http.responseText});
+            if (http.readyState == 4 && http.status === 200) cb(false, JSON.parse(http.responseText));
+            else if (http.readyState == 4 && http.status !== 200) cb({status: http.status, response: http.responseText});
         };
 
         http.open(verb, url, true);

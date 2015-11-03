@@ -1,7 +1,3 @@
-/**@class jnMenuCtrl
- *@classdesc  Controllers App state via a main side menu
- *
- */
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 import con = require('app/constants');

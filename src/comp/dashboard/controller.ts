@@ -1,9 +1,3 @@
-/**@class jnDashboardCtrl
- *@classdesc the dashboard does not have a defined production purpose yet. It is currently being used
- * to monitor replication and view build status as well as providing pouchDB benchmark tests, and provides
- * an access point for the camera.
- */
-
 /// <reference path="../../typedefs/tsd.d.ts" />
 
 import con = require('app/constants');
@@ -18,14 +12,26 @@ class dashboardController {
     private $scope;
     private _;
     private $state;
+    private dal:dal;
 
-    static $inject:string[] = [con.ng.$scope, lodash.moduleName, con.ng.$state];
-    constructor($scope, _, $state){
+    static $inject:string[] = [con.ng.$scope, lodash.moduleName, con.ng.$state, dal.moduleName];
+    constructor($scope, _, $state, dal){
         this.$scope = $scope;
         this._ = _;
         this.$state = $state;
+        this.dal = dal;
 
         this.$scope.vm = this;
+    }
+
+    createDB(){
+        this.dal.createDB('testDB');
+    }
+
+    initDB(){
+        this.dal.initDB()
+            .then((success)=>{var test = success})
+            .catch((err)=>{var test = err});
     }
 
     navToContacts() { this.$state.go(contactState.state.name); }

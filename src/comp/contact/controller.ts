@@ -17,6 +17,7 @@ interface commonScope extends ng.IScope {
 
 class contactController {
     static moduleName = 'contactController';
+    static stateName = 'app.contact';
     static templateUrl = 'comp/contact/view.tpl.html';
 
     //scope variables

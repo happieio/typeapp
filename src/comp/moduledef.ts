@@ -1,7 +1,5 @@
 /// <reference path="../typedefs/tsd.d.ts" />
 
-/*AMD DEPENDENCY MANAGEMENT*/
-
 import contact = require('comp/contact/moduledef');
 import contactDetails = require('comp/contactdetails/moduledef');
 import dashboard = require('comp/dashboard/moduledef');
@@ -19,7 +17,3 @@ class appComponents {
 
 }
 export = appComponents;
-
-
-
-
