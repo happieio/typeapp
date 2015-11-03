@@ -1,6 +1,6 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
-import dal = require('lib/data/db/dbapi');
+import dal = require('lib/data/db/api');
 
 
 class data {

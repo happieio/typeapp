@@ -9,23 +9,28 @@
 import con = require('app/constants');
 import lodash = require('lib/util/lodash');
 import contactState = require('app/state/contact');
+import dal = require('lib/data/db/api');
 
 class dashboardController {
     static moduleName = 'dashboardController';
     static templateUrl = 'comp/dashboard/view.tpl.html';
 
-    static dashController = angular.module(dashboardController.moduleName, [])
-        .controller(dashboardController.moduleName,
-        [con.ng.$scope, lodash.moduleName, con.ng.$state,
-            ($scope, _, $state) => {
+    private $scope;
+    private _;
+    private $state;
 
-                $scope.navToContacts = () => {
-                    $state.go(contactState.state.name);
-                }
+    static $inject:string[] = [con.ng.$scope, lodash.moduleName, con.ng.$state];
+    constructor($scope, _, $state){
+        this.$scope = $scope;
+        this._ = _;
+        this.$state = $state;
 
-        }]);
+        this.$scope.vm = this;
+    }
+
+    navToContacts() { this.$state.go(contactState.state.name); }
+
+    static dashController = angular.module(dashboardController.moduleName, []).controller(dashboardController.moduleName, dashboardController);
 }
 
 export = dashboardController;
-
-

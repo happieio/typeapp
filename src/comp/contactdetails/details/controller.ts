@@ -3,8 +3,8 @@
 import con = require('app/constants');
 
 class contactDetailsController {
-    static moduleName =  'contactDetailsDetailsController';
-    static templateUrl =  'comp/contactdetails/details/view.tpl.html';
+    static moduleName = 'contactDetailsDetailsController';
+    static templateUrl = 'comp/contactdetails/details/view.tpl.html';
 
     name;
 
@@ -13,7 +13,8 @@ class contactDetailsController {
     $ionicHistory;
 
     static $injector = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory];
-    constructor($scope, $stateParams, $ionicHistory){
+
+    constructor($scope, $stateParams, $ionicHistory) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$ionicHistory = $ionicHistory;
@@ -23,9 +24,7 @@ class contactDetailsController {
         this.name = this.$stateParams.name;
     }
 
-    goBack() {
-        this.$ionicHistory.goBack();
-    }
+    goBack() { this.$ionicHistory.goBack(); }
 
 }
 

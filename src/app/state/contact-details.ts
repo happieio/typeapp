@@ -5,7 +5,7 @@ import contactDetails = require('comp/contactdetails/controller');
 
 class ContactDetails {
 
-    static state:angular.ui.IStateChildObj = {
+    static state:angular.ui.IState = {
         name: 'app.contactDetails',
         parent: app.state,
         cache: true,

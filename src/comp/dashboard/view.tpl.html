@@ -4,7 +4,10 @@
     </ion-nav-buttons>
     <ion-content class="has-header padding">
 
-        <button nav-direction="exit" on-tap="navToContacts()">Go To Contacts</button>
+        <button nav-direction="exit" on-tap="vm.navToContacts()">Go To Contacts</button>
+
+        <button on-tap="createDb()">Create CBL Instance</button>
+        <button on-tap="initDb()">Init CBL Instance</button>
 
 
     </ion-content>

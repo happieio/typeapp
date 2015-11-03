@@ -56,11 +56,10 @@ gulp.task('default', function () {
     var cb = function () {
         return gulp.src('').pipe(exit());
     };
-    runSequence('clean',
-        ['index','scripts:vendor', 'templates', 'styles', 'vendor']);
-    setTimeout(function(){
+    runSequence('clean', ['index', 'scripts:vendor', 'templates', 'styles', 'vendor']);
+    setTimeout(function () {
         runSequence('ts:app');
-    },2000);
+    }, 2000);
 });
 
 gulp.task('clean', function () {
@@ -72,10 +71,10 @@ gulp.task('cordova:reset', function () {
     var addplatform = '';
     GLOBALS.PLATFORM.split(' ').forEach(function (element) {
         if (element === 'ios') {
-            addplatform += 'ionic platform add ' + element + '@3.9.0' + ' && ';
+            addplatform += 'ionic platform add ' + element + '@3.9.1' + ' && ';
         }
         if (element === 'android') {
-            addplatform += 'ionic platform add ' + element + '@4.1.0' + ' && ';
+            addplatform += 'ionic platform add ' + element + '@4.1.1' + ' && ';
         }
     });
     //remove extra &&
@@ -93,7 +92,8 @@ gulp.task('cordova:reset', function () {
             'cordova plugin add cordova-plugin-statusbar@1.0.0',
             'cordova plugin add cordova-plugin-splashscreen@2.0.0',
             'cordova plugin add cordova-plugin-console@1.0.1',
-            'cordova plugin add https://github.com/happieio/cordova-plugin-swiftbridge.git'
+            'cordova plugin add https://github.com/happieio/cordova-plugin-swiftbridge.git',
+            'cordova plugin add https://github.com/happieio/cordova-plugin-couchbase-lite.git'
         ]));
 });
 

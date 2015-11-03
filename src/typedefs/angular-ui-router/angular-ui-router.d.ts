@@ -12,32 +12,6 @@ declare module 'angular-ui-router' {
 }
 
 declare module angular.ui {
-
-    /**
-     * not including other params from IState because Typescript does not enforce optional members at compile time.
-     * This interface can implement any of IState's additional members without breaking this contract.
-     */
-    interface IStateAbstractObj {
-        name:string;
-        abstract:boolean;
-        url:string;
-    }
-
-    /**
-     * IStateObj and IStateChildObj enforce the name and name/parent contract when implementing objects for states that are nested
-     */
-    interface IStateObj {
-        name:string;
-        url:string;
-    }
-
-    interface IStateChildObj {
-        name:string;
-        parent:IStateChildObj | IStateChildObj | IStateAbstractObj;
-        url:string;
-    }
-
-
     interface IState {
         name?: string;
         /**
@@ -67,7 +41,11 @@ declare module angular.ui {
          */
         parent?: string | IState
         
-        
+        /**
+        Ionic addition
+         */
+        cache?:boolean;
+
         resolve?: {};
         /**
          * A url with optional parameters. When a state is navigated or transitioned to, the $stateParams service will be populated with any parameters that were passed.

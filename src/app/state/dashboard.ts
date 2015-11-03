@@ -5,7 +5,7 @@ import DashboardController = require('comp/dashboard/controller');
 
 class Dashboard {
 
-    static state:angular.ui.IStateChildObj = {
+    static state:angular.ui.IState = {
         name: 'app.dashboard',
         parent: app.state,
         cache: true,

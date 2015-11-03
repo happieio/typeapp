@@ -1,6 +1,5 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
-
 import menuController = require('comp/menu/controller');
 
 class menu {

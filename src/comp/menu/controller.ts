@@ -13,21 +13,22 @@ class menuController {
     static moduleName = 'menuController';
     static templateUrl = 'comp/menu/view.tpl.html';
 
-    static menuCtrl = angular.module(menuController.moduleName, [])
-        .controller(menuController.moduleName, [con.ng.$scope, con.ng.$state, ($scope, $state) => {
+    private $scope;
+    private $state;
 
-            $scope.goToContacts = () => {
-              $state.go(contactState.state.name);
-            };
+    static $inject:string[] = [con.ng.$scope, con.ng.$state];
+    constructor($scope, $state){
+        this.$scope = $scope;
+        this.$state = $state;
 
-            $scope.goToDashboard = () => {
-                $state.go(dashboardState.state.name);
-            };
+        this.$scope.vm = this;
+    }
 
-        }]);
+    goToContacts() {this.$state.go(contactState.state.name); }
 
+    goToDashboard() { this.$state.go(dashboardState.state.name); }
 
+    static menuCtrl = angular.module(menuController.moduleName, []).controller(menuController.moduleName, menuController);
 }
 
 export = menuController;
-

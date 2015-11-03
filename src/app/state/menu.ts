@@ -5,7 +5,7 @@ import menuController = require('comp/menu/controller');
 
 class Menu {
 
-    static state:angular.ui.IStateChildObj = {
+    static state:angular.ui.IState = {
         name: 'app.menu',
         parent: app.state,
         cache: true,

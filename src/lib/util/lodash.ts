@@ -1,14 +1,11 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
-/** angular wrapper for lodash */
+import con = require('app/constants');
+
+/**angular wrapper for lodash*/
 class lodashService {
     static moduleName = '_';
-
-    static angularModule = angular.module(lodashService.moduleName,[]).factory(lodashService.moduleName, ['$window', loDash]);
+    static angularModule:ng.IModule = angular.module(lodashService.moduleName, []).factory(lodashService.moduleName, [con.ng.$window, ($window) => {return $window._;}]);
 }
 
 export = lodashService;
-
-
-function loDash($window) {return $window._; }
-

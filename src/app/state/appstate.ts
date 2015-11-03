@@ -2,7 +2,7 @@
 
 class App {
 
-    static state:angular.ui.IStateAbstractObj = {
+    static state:angular.ui.IState = {
         name: 'app',
         url: '/app',
         abstract: true,

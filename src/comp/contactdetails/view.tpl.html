@@ -1,12 +1,12 @@
 <ion-view style="background-color:rgb(245,245,245)" view-title="Contact Details" cache-view="true">
     <ion-nav-buttons side="left">
-        <button on-tap="goBack()">Back</button>
+        <button on-tap="vm.goBack()">Back</button>
     </ion-nav-buttons>
 
     <ion-content id="detailFrame" scroll="false">
 
-        <p>{{name}}</p>
+        <p>{{vm.name}}</p>
 
-        <button on-tap="goToMoreDetails()">Go To More Details</button>
+        <button on-tap="vm.goToMoreDetails()">Go To More Details</button>
     </ion-content>
 </ion-view>

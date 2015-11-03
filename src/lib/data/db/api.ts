@@ -1,6 +1,7 @@
 /// <reference path="../../../typedefs/tsd.d.ts" />
 
 import con = require('app/constants');
+import CBL = require('lib/data/db/cbl');
 
 /** database and business model management service */
 class dalService {
