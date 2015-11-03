@@ -2,7 +2,7 @@
   "name": "TypeApp",
   "private": "false",
   "dependencies": {
-    "bluebird": "2.9.26",
+    "bluebird": "3.0.1",
     "ionic": "driftyco/ionic-bower#v1.1",
     "ionicons": "https://github.com/driftyco/ionicons.git",
     "lodash": "^3.10.1",

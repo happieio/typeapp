@@ -24,14 +24,16 @@ class dashboardController {
         this.$scope.vm = this;
     }
 
-    createDB(){
-        this.dal.createDB('testDB');
+    putDoc(){
+        this.dal.putDoc({_id:'123',data:'test'},{})
+            .then((success)=>{alert(success)})
+            .catch((err)=>{alert(err)});
     }
 
-    initDB(){
-        this.dal.initDB()
-            .then((success)=>{var test = success})
-            .catch((err)=>{var test = err});
+    getDoc(){
+        this.dal.getDoc('123',{})
+            .then((success)=>{alert(success)})
+            .catch((err)=>{alert(err)});
     }
 
     navToContacts() { this.$state.go(contactState.state.name); }
