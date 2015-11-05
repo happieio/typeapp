@@ -31,8 +31,10 @@ $bar-default-border: rgb(69,180,218);
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../-vendor/ionicons/fonts" !default;
-@import "../-vendor/ionic/scss/ionic",
+
+@import
+"../-vendor/ionic/scss/ionic",
 "../-vendor/ionicons/scss/ionicons",
-"../comp/def",
+"../comp/main",
 "../lib/directives/def"
 ;
