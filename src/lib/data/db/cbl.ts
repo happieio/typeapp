@@ -73,20 +73,26 @@ class cblDB {
         });
     }
 
-    changes(params?:cbl.IGetDbChangesParams):Emitter {
-        if(!params)params = {feed:'eventsource'};
-        else params.feed = 'eventsource';
-        var emitter = new Emitter();
-        var uri = new URI(this.dbUrl).segment('_changes').search(params);
-        var source = new EventSource(uri.toString());
-        source.onerror = (e) => { emitter.emit('error', JSON.parse(e.data)); };
-        source.onmessage = (e) => {emitter.emit('change', JSON.parse(e.data)); };
-        emitter.cancel = () =>{
-            source.close();
-            emitter.emit('complete');
-            emitter.removeAllListeners();
-        };
-        return emitter;
+    changes(params?:cbl.IGetDbChangesParams):Promise<void> {
+        return this.info()
+            .then((info:cbl.IGetDbChangesResponse)=> {
+                if (params.since === 'now') params.since = info.committed_update_seq;
+
+                if (!params)params = {feed: 'eventsource'};
+                else params.feed = 'eventsource';
+                var emitter = new Emitter();
+                var uri = new URI(this.dbUrl).segment('_changes').search(params);
+                var source = new EventSource(uri.toString());
+                source.onerror = (e) => { emitter.emit('error', JSON.parse(e.data)); };
+                source.onmessage = (e) => {emitter.emit('change', JSON.parse(e.data)); };
+                emitter.cancel = () => {
+                    source.close();
+                    emitter.emit('complete');
+                    emitter.removeAllListeners();
+                };
+                return emitter;
+            })
+            .catch((err)=> { cblDB.buildError('Error From changes request for db info', err) })
     }
 
     compact() {
@@ -145,7 +151,7 @@ class cblDB {
         return new Promise((resolve, reject)=> {
             this.processRequest('GET', this.dbUrl, null, null, (err, info)=> {
                 if (err) reject(cblDB.buildError('Error From db info Request', err));
-                else resolve({db_name: info.db_name, doc_count: info.doc_count, update_seq: info.update_seq});
+                else resolve(info);
             });
         });
     }

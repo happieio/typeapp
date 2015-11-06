@@ -66,10 +66,22 @@ declare module cbl {
         include_docs?:boolean; //Indicates whether to include the associated doc with each result. f there are conflicts, only the winning revision is returned. default:false
         'last-event-id'?:number; //Alias for the Last-Event-ID header. default:none
         limit?:number;//	Limits the number of result rows to the specified value. Using a value of 0 has the same effect as the value 1. default:none
-        since?:number;//	Starts the results from the change immediately after the given sequence number. The value can be an integer or a row value. default:0
+        since?:number | string;//	Starts the results from the change immediately after the given sequence number. The value can be an integer or a row value. default:0
         style?:string; //Number of revisions to return in the changes array. main_only returns the current winning revision, all_docs returns all leaf revisions including conflicts and deleted former conflicts. default:main_only
         timeout?:number; //Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results. Only applicable for longpoll or continuous feeds. The default value is specified by the httpd/changes_timeout configuration option. If not specified, the default maximum timeout is used to prevent undetected dead connections. default:60000
         view?:string; //Name of a view function to use as a filter	none
+    }
+
+    interface IGetDbChangesResponse {
+        committed_update_seq:number; //Number of committed updates to the database
+        db_name:string; //Name of the database
+        db_uuid:string; //Database identifier
+        disk_format_version:number; //Database schema version
+        disk_size:number; //Total amount of data stored on the disk. Units: bytes
+        doc_count:number; //Number of documents in the database
+        instance_start_time:number; //Date and time the database was opened. Units: microseconds since the epoch (1 January 1970)
+        purge_seq:number; //Returns 0.
+        update_seq:number; //Number of updates to the database
     }
 
     interface IGetPostDbDesignViewName {
