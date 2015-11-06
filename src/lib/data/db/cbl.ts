@@ -42,7 +42,7 @@ class cblDB {
         });
     }
 
-    allDocs(params:cbl.IAllDocsParams) {
+    allDocs(params?:cbl.IAllDocsParams) {
         return new Promise((resolve, reject)=> {
             var verb = 'GET';
             var requestParams:cbl.IGetPostDbDesignViewName = <cbl.IGetPostDbDesignViewName>{};

@@ -9,6 +9,8 @@ class dashboardController {
     static moduleName = 'dashboardController';
     static templateUrl = 'comp/dashboard/view.tpl.html';
 
+    private testOutput = 'run a test';
+
     private $scope;
     private _;
     private $state;
@@ -26,15 +28,23 @@ class dashboardController {
 
     putDoc(){
         this.dal.putDoc({_id:'123',data:'test'},{})
-            .then((success)=>{alert(success)})
-            .catch((err)=>{alert(err)});
+            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
+            .catch((err)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
     }
 
     getDoc(){
         this.dal.getDoc('123',{})
-            .then((success)=>{alert(success)})
-            .catch((err)=>{alert(err)});
+            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
+            .catch((err)=>{  this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
     }
+
+    allDocs(){
+        return this.dal.allDocs({limit:3})
+            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
+            .catch((err)=>{  this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
+    }
+
+
 
     navToContacts() { this.$state.go(contactState.state.name); }
 

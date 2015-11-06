@@ -38,6 +38,12 @@ class dalService {
             .catch((err)=>{return err;});
     }
 
+    allDocs(params?){
+        return this.db.allDocs(params)
+            .then((success)=>{return success;})
+            .catch((err)=>{return err;});
+    }
+
     static angularModule = angular.module(dalService.moduleName, []).service(dalService.moduleName, dalService);
 }
 
