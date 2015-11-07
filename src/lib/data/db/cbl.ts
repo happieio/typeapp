@@ -61,7 +61,7 @@ class cblDB {
         });
     }
 
-    bulkDocs(docs:Array<cbl.IDoc>) {
+    bulkDocs(docs:cbl.IPostDbBulkDocs) {
         return new Promise((resolve, reject)=> {
             var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
             var uri = new URI(this.dbUrl).segment('_bulk_docs');
