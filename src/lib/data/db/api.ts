@@ -25,7 +25,7 @@ class dalService {
 
     }
 
-    putDoc(doc, params){
+    upsertDoc(doc, params){
         return this.db.upsert(doc, params)
             .then((success)=>{return success;})
             .catch((err)=>{return err;});
@@ -39,6 +39,12 @@ class dalService {
 
     allDocs(params?:cbl.IAllDocsParams){
         return this.db.allDocs(params)
+            .then((success)=>{return success;})
+            .catch((err)=>{return err;});
+    }
+
+    bulkDocs(docs){
+        return this.db.bulkDocs(docs)
             .then((success)=>{return success;})
             .catch((err)=>{return err;});
     }

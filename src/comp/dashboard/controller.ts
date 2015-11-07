@@ -17,7 +17,8 @@ class dashboardController {
     private dal:dal;
 
     static $inject:string[] = [con.ng.$scope, lodash.moduleName, con.ng.$state, dal.moduleName];
-    constructor($scope, _, $state, dal){
+
+    constructor($scope, _, $state, dal) {
         this.$scope = $scope;
         this._ = _;
         this.$state = $state;
@@ -26,24 +27,34 @@ class dashboardController {
         this.$scope.vm = this;
     }
 
-    putDoc(){
-        this.dal.putDoc({_id:'123',data:'test'},{})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
-            .catch((err)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
+    upsertDoc() {
+        this.dal.upsertDoc({_id: '123', data: 'test'}, {})
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    getDoc(){
-        this.dal.getDoc('123',{})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
-            .catch((err)=>{  this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
+    getDoc() {
+        this.dal.getDoc('123', {})
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    allDocs(){
-        return this.dal.allDocs({limit:3, include_docs:true})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
-            .catch((err)=>{  this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
+    allDocs() {
+        return this.dal.allDocs({limit: 3, include_docs: true})
+            .then((success)=> {
+                this.$scope.$applyAsync(()=> {
+                    if (success.rows[0].doc) this.testOutput = 'first doc returned \n\n' + JSON.stringify(success.rows[0].doc, null, '\t');
+                    else this.testOutput = JSON.stringify(success, null, '\t')
+                });
+            })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
+    bulkDocs(){
+        this.dal.bulkDocs([{some:'data', more:123},{some:'data', more:123},{some:'data', more:123}])
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
+    }
 
 
     navToContacts() { this.$state.go(contactState.state.name); }
