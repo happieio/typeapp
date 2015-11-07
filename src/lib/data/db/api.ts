@@ -11,42 +11,54 @@ class dalService {
     private $rootScope:ng.IRootScopeService;
 
     static $inject = [con.ng.$rootScope];
-    constructor($rootScope){
+
+    constructor($rootScope) {
         this.$rootScope = $rootScope; // just an example
 
-        ionic.Platform.ready(()=>{
-            setTimeout(()=>{
+        ionic.Platform.ready(()=> {
+            setTimeout(()=> {
                 this.db = new CBL('test');
                 this.db.initDB()
-                    .then((success)=>{console.log(success); })
-                    .catch((err)=>{console.log(err); });
-            },3000);
+                    .then((success)=> {
+                        console.log(success);
+                        alert('CBL Ready :)')
+                    })
+                    .catch((err)=> {console.log(err); });
+            }, 2000);
         })
 
     }
 
-    upsertDoc(doc, params){
+    upsertDoc(doc, params) {
         return this.db.upsert(doc, params)
-            .then((success)=>{return success;})
-            .catch((err)=>{return err;});
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
     }
 
-    getDoc(docId, params){
+    getDoc(docId, params) {
         return this.db.get(docId, params)
-            .then((success)=>{return success;})
-            .catch((err)=>{return err;});
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
     }
 
-    allDocs(params?:cbl.IAllDocsParams){
+    allDocs(params?:cbl.IAllDocsParams) {
         return this.db.allDocs(params)
-            .then((success)=>{return success;})
-            .catch((err)=>{return err;});
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
     }
 
-    bulkDocs(docs){
+    bulkDocs(docs) {
         return this.db.bulkDocs(docs)
-            .then((success)=>{return success;})
-            .catch((err)=>{return err;});
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
+    }
+
+    startTwoWayReplication() {
+        return Promise.join(
+            this.db.replicate.to('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
+            this.db.replicate.from('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
+            (replicateTo, replicateFrom)=> { return {to: replicateTo, from: replicateFrom}; }
+        );
     }
 
     static angularModule = angular.module(dalService.moduleName, []).service(dalService.moduleName, dalService);

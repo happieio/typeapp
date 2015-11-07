@@ -50,8 +50,14 @@ class dashboardController {
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    bulkDocs(){
-        this.dal.bulkDocs({docs:[{some:'data', more:123},{some:'data', more:123},{some:'data', more:123}]})
+    bulkDocs() {
+        this.dal.bulkDocs({docs: [{some: 'data', more: 123}, {some: 'data', more: 123}, {some: 'data', more: 123}]})
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
+    }
+
+    startTwoWayReplication() {
+        this.dal.startTwoWayReplication()
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }

@@ -5,7 +5,6 @@ import Emitter = require('lib/data/db/cblemitter');
 class cblDB {
 
     dbName = '';
-    replicate = null;
 
     static eventTypes = {
         active: 'active', change: 'change', complete: 'complete', denied: 'denied', error: 'error', paused: 'paused'
@@ -16,29 +15,31 @@ class cblDB {
 
     constructor(dbName:string) {
         this.dbName = dbName.replace(/[^a-z0-9$_()+-/]/g, '');
-
-        this.replicate = {
-            from: this.replicateFrom,
-            to: this.replicateTo
-        }
     }
 
-    initDB() {
+    initDB(remotePrimaryDB?:string) {
         return new Promise((resolve, reject)=> {
-            //get cbl server url
-            cbl.getServerURL(
-                (url)=> {
-                    this.serverUrl = url;
-                    this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
-                    this.processRequest('PUT', this.dbUrl.toString(), null, null,
-                        (err, response)=> {
-                            if (response.status = 412) resolve(true);
-                            else if (response.ok) resolve(true);
-                            else if (err) reject(cblDB.buildError('Error From DB PUT Request', err));
-                            else reject(cblDB.buildError('Unknown Error From DB PUT Request', response));
-                        });
-                },
-                (err)=> {throw new Error(err); });
+
+            if (remotePrimaryDB) {
+                this.serverUrl = remotePrimaryDB;
+                this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
+                resolve('initialized remote CouchDB as the primary db for this instance');
+            }
+            else {
+                //get cbl server url
+                cbl.getServerURL((url)=> {
+                        this.serverUrl = url;
+                        this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
+                        this.processRequest('PUT', this.dbUrl.toString(), null, null,
+                            (err, response)=> {
+                                if (response.status = 412) resolve(true);
+                                else if (response.ok) resolve(true);
+                                else if (err) reject(cblDB.buildError('Error From DB PUT Request', err));
+                                else reject(cblDB.buildError('Unknown Error From DB PUT Request', response));
+                            });
+                    },
+                    (err)=> {throw new Error(err); });
+            }
         });
     }
 
@@ -220,13 +221,13 @@ class cblDB {
         });
     }
 
-    private replicateFrom(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
+    replicateFrom(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
         params = {source: this.dbName, target: otherDB};
         var uri = new URI(this.serverUrl).segment('_replicate');
         return this.replicationRequest(params, 'replicator.from', 'POST', uri.toString());
     }
 
-    private replicateTo(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
+    replicateTo(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
         params = {source: otherDB, target: this.dbName};
         var uri = new URI(this.serverUrl).segment('_replicate');
         return this.replicationRequest(params, 'replicator.to', 'POST', uri.toString());
