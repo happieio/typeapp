@@ -28,20 +28,20 @@ class dashboardController {
 
     putDoc(){
         this.dal.putDoc({_id:'123',data:'test'},{})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
-            .catch((err)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
+            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
+            .catch((err)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
     }
 
     getDoc(){
         this.dal.getDoc('123',{})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
-            .catch((err)=>{  this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
+            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
+            .catch((err)=>{  this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
     }
 
     allDocs(){
-        return this.dal.allDocs({limit:3})
-            .then((success)=>{ this.$scope.$applyAsync(()=>{JSON.stringify(success)}); })
-            .catch((err)=>{  this.$scope.$applyAsync(()=>{JSON.stringify(err)});  });
+        return this.dal.allDocs({limit:3, include_docs:true})
+            .then((success)=>{ this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(success, null, 4)}); })
+            .catch((err)=>{  this.$scope.$applyAsync(()=>{this.testOutput = JSON.stringify(err)});  });
     }
 
 

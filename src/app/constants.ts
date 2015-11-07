@@ -1,5 +1,5 @@
 /// <reference path="../typedefs/tsd.d.ts" />
-
+alert('Paused execution before angular bootstraps');
 class constants {
 
     static ng = {

@@ -1,5 +1,4 @@
 /// <reference path="../../../typedefs/tsd.d.ts" />
-alert();
 import con = require('app/constants');
 import CBL = require('lib/data/db/cbl');
 
@@ -38,7 +37,7 @@ class dalService {
             .catch((err)=>{return err;});
     }
 
-    allDocs(params?){
+    allDocs(params?:cbl.IAllDocsParams){
         return this.db.allDocs(params)
             .then((success)=>{return success;})
             .catch((err)=>{return err;});

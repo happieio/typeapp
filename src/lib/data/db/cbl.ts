@@ -52,7 +52,7 @@ class cblDB {
             }
             else requestParams = <cbl.IGetPostDbDesignViewName>_.assign(requestParams, params);
 
-            var uri = new URI(this.dbUrl).search(requestParams);
+            var uri = new URI(this.dbUrl).segment('_all_docs').search(requestParams);
             this.processRequest(verb, uri.toString(), null, null,
                 (err, success)=> {
                     if (err) reject(cblDB.buildError('Error From allDocs Request', err));
