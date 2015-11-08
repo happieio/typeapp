@@ -61,8 +61,8 @@ class dalService {
 
     startTwoWayReplication() {
         return Promise.join(
-            this.db.replicateTo('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
-            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
+            this.db.replicateTo('ADD URL HERE', {continuous: true}),
+            this.db.replicateFrom('ADD YOUR URL HERE', {continuous: true}),
             (replicateTo, replicateFrom) => { return {to: replicateTo, from: replicateFrom}; }
         );
     }

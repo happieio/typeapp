@@ -40,7 +40,7 @@ class dashboardController {
     }
 
     allDocs() {
-        return this.dal.allDocs({limit: 3, include_docs: true})
+        return this.dal.allDocs({include_docs: true})
             .then((success)=> {
                 this.$scope.$applyAsync(()=> {
                     if (success.rows[0].doc) this.testOutput = 'first doc returned \n\n' + JSON.stringify(success.rows[0].doc, null, '\t');
