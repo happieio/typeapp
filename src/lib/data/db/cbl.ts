@@ -32,14 +32,26 @@ class cblDB {
                         this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
                         this.processRequest('PUT', this.dbUrl.toString(), null, null,
                             (err, response)=> {
-                                if (response.status = 412) resolve(true);
+                                if (err.status = 412) resolve(err.response);
                                 else if (response.ok) resolve(true);
-                                else if (err) reject(cblDB.buildError('Error From DB PUT Request', err));
-                                else reject(cblDB.buildError('Unknown Error From DB PUT Request', response));
+                                else if (err) reject(cblDB.buildError('Error From DB PUT Request with status: ' + err.status, err));
+                                else reject(cblDB.buildError('Unknown Error From DB PUT Request', {res:response, err:err}));
                             });
                     },
                     (err)=> {throw new Error(err); });
             }
+        });
+    }
+
+    activeTasks() {
+        return new Promise((resolve, reject)=> {
+            var verb = 'GET';
+            var uri = new URI(this.serverUrl).segment('_active_tasks');
+            this.processRequest(verb, uri.toString(), null, null,
+                (err, success)=> {
+                    if (err) reject(cblDB.buildError('Error From activeTasks Request', err));
+                    else resolve(success);
+                });
         });
     }
 
@@ -221,16 +233,17 @@ class cblDB {
         });
     }
 
-    replicateFrom(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
-        params = {source: this.dbName, target: otherDB};
+    replicateFrom(otherDB:string, bodyRequest:cbl.IPostReplicateParams) {
+        bodyRequest = {source: this.dbName, target: otherDB};
         var uri = new URI(this.serverUrl).segment('_replicate');
-        return this.replicationRequest(params, 'replicator.from', 'POST', uri.toString());
+        return this.continuousRequest('POST', uri.toString(), bodyRequest, null, 'replicatorFrom');
     }
 
-    replicateTo(otherDB:string, params?:cbl.IPostReplicateParams):Emitter | Promise<{}> {
-        params = {source: otherDB, target: this.dbName};
+    replicateTo(otherDB:string, bodyRequest:cbl.IPostReplicateParams) {
+        bodyRequest = {source: otherDB, target: this.dbName};
         var uri = new URI(this.serverUrl).segment('_replicate');
-        return this.replicationRequest(params, 'replicator.to', 'POST', uri.toString());
+
+        return this.continuousRequest('POST', uri.toString(), bodyRequest, null, 'replicatorTo');
     }
 
     remove(doc:cbl.IDoc, params?:cbl.IBatchRevParams) {
@@ -337,61 +350,88 @@ class cblDB {
         else http.send();
     }
 
-    private replicationRequest(params:cbl.IPostReplicateParams, verb:string, uri:string, source:string):Emitter | Promise<{}> {
+    private continuousRequest(verb:string, uri:string, data:any, headers:Object, source?:string) {
         var emitter = new Emitter();
-        var http = new XMLHttpRequest();
-        emitter.cancel(()=> {
-            emitter.emit('complete');
-            emitter.removeAllListeners();
-            if (params.continuous) {this.cancelReplication(emitter.cancelId)}
-        });
+        emitter.cancel = function () {
+            return new Promise((resolve, reject)=> {
+                this.emit('complete');
+                this.removeAllListeners();
+                if (data.continuous) {resolve(this.cancelReplication(emitter.cancelId)); }
+                else resolve('replication canceled');
+            });
+        };
 
-        //TODO : use _active_tasks end point to handle active, pause events
+        var requestPromise = new Promise((resolve, reject)=> {
+            var http = new XMLHttpRequest();
 
-        http.open(verb, uri, true);
-        var fromPromise = new Promise((resolve, reject)=> {
+            //TODO : use _active_tasks end point to handle active, pause events
+
+            http.open(verb, uri, true);
+
             //state change callback
             http.onreadystatechange = () => {
                 if (http.readyState === 4) {
                     if (http.status >= 200 && http.status <= 299) {
                         var response:cbl.IPostReplicateResposne = JSON.parse(http.responseText);
                         emitter.cancelId = response.session_id;
-                        if (params.continuous) emitter.emit(cblDB.eventTypes.change, JSON.parse(http.responseText));
+                        if (data.continuous) emitter.emit(cblDB.eventTypes.change, JSON.parse(http.responseText));
                         else emitter.emit(cblDB.eventTypes.complete, JSON.parse(http.responseText));
-                        resolve(response);
+                        resolve(JSON.parse(http.responseText));
                     }
                     else if (http.status === 401 || http.status === 403) {
                         emitter.emit(cblDB.eventTypes.denied, {status: http.status, response: http.responseText});
                         reject(cblDB.buildError('Denied From ' + source + ' request', {
                             status: http.status,
-                            response: http.responseText
+                            response: JSON.parse(http.response)
                         }));
                     }
                     else if (http.status === 400 || http.status >= 404) {
                         emitter.emit(cblDB.eventTypes.error, {status: http.status, response: http.responseText});
                         reject(cblDB.buildError('Error From ' + source + ' request', {
                             status: http.status,
-                            response: http.responseText
+                            response: JSON.parse(http.response)
                         }));
                     }
                 }
                 else if (http.readyState !== 0 && http.readyState !== 1 && http.readyState !== 2 && http.readyState !== 3) {
                     reject(cblDB.buildError('Unknown Error From ' + source + ' request', {
                         status: http.status,
-                        response: http.responseText
+                        response: JSON.parse(http.response)
                     }));
                 }
             };
-            http.send(JSON.stringify(params));
+            http.send(JSON.stringify(data));
         });
-        return < Emitter | Promise<{}> >_.merge(emitter, fromPromise);
+
+        return this.mergePromiseEmitter(requestPromise, emitter);
     }
 
     private cancelReplication(cancelId:string) {
-        var uri = new URI(this.serverUrl).segment('_replicate');
-        var http = new XMLHttpRequest();
-        http.open('POST', uri.toString(), true);
-        http.send(JSON.stringify({replication_id: cancelId, cancel: true}));
+        return new Promise((resolve, reject)=> {
+            var uri = new URI(this.serverUrl).segment('_replicate');
+            var http = new XMLHttpRequest();
+            http.open('POST', uri.toString(), true);
+            http.onreadystatechange = () => {
+                if (http.readyState === 4) {
+                    if (http.status >= 200 && http.status <= 299) resolve('continuous replication canceled');
+                    else if (http.status >= 400) reject(new Error('failed to cancel replication with status: ' + http.status));
+                }
+            };
+            http.send(JSON.stringify({replication_id: cancelId, cancel: true}));
+        });
+    }
+
+    private mergePromiseEmitter(promise, emitter:any){
+        //TODO this is REALLY! hacky. Fix it.
+        var promiseEmitter:any = _.merge(promise, emitter);
+        promiseEmitter.emit = emitter.emit;
+        promiseEmitter.listeners = emitter.listeners;
+        promiseEmitter.on = emitter.on;
+        promiseEmitter.once = emitter.once;
+        promiseEmitter.EE = emitter.on;
+        promiseEmitter.removeListener = emitter.removeListener;
+        promiseEmitter.removeAllListeners = emitter.removeAllListeners;
+        return promiseEmitter;
     }
 }
 

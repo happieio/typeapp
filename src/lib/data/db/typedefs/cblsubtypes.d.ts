@@ -139,6 +139,8 @@ declare module cbl {
         source?:string | cblDB.instance; //Id of DB to copy from. Either string of local DB name or remote DB URL, or cblInstance. Required:Yes
         target?:string | cblDB.instance; //ID of DB to copy to. Same format and interpretation as source. Required:Yes
         continuous?:boolean; //Specifies whether the replication should be in continuous mode. Required:No
+        replication_id?:string; //used to id a replication for cancellation
+        cancel?:boolean; //used to cancel a replication, requires replication_id to be present.
     }
 
     interface IPostReplicateResposne {

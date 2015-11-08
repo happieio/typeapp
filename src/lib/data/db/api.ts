@@ -47,6 +47,12 @@ class dalService {
             .catch((err)=> {return err;});
     }
 
+    activeTasks(){
+        return this.db.activeTasks()
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
+    }
+
     bulkDocs(docs) {
         return this.db.bulkDocs(docs)
             .then((success)=> {return success;})
@@ -55,9 +61,17 @@ class dalService {
 
     startTwoWayReplication() {
         return Promise.join(
-            this.db.replicate.to('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
-            this.db.replicate.from('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
-            (replicateTo, replicateFrom)=> { return {to: replicateTo, from: replicateFrom}; }
+            this.db.replicateTo('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
+            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {continuous: true}),
+            (replicateTo, replicateFrom) => { return {to: replicateTo, from: replicateFrom}; }
+        );
+    }
+
+    cancelTwoWayReplication(toId, fromId){
+        return Promise.join(
+            this.db.replicateTo('http://joeblack:apple@52.24.70.219/test', {replication_id:toId, cancel: true}),
+            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {replication_id:fromId, cancel: true}),
+            (replicateTo, replicateFrom) => { return {to: replicateTo, from: replicateFrom}; }
         );
     }
 

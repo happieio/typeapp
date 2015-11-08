@@ -9,11 +9,7 @@ class EventEmitter {
     cancel:Function = null;
     cancelId:string = null;
 
-    constructor() {
-        // Alias methods names because people roll like that.
-        this.off = this.removeListener;
-        this.addListener = this.on;
-    }
+    constructor() { }
 
     /** Emit an event to all registered event listeners. */
     emit(event:string, a1?:any, a2?:any, a3?:any, a4?:any, a5?:any):boolean {
@@ -55,7 +51,7 @@ class EventEmitter {
 
     /** Register a new EventListener for the given event. event: Name of the event. fn: Callback function. [context=this] The context of the function. */
     on(event:string, fn:Function, context:any) {
-        var listener = new EE(fn, context || this);
+        var listener = this.EE(fn, context || this);
         if (!this._events) this._events = Object.create(null);
         if (!this._events[event]) this._events[event] = listener;
         else {
@@ -67,7 +63,7 @@ class EventEmitter {
 
     /** Add an EventListener that's only called once. event: Name of the event. fn: Callback function. [context=this] The context of the function. */
     once(event:string, fn:Function, context:any) {
-        var listener = new EE(fn, context || this, true);
+        var listener = this.EE(fn, context || this, true);
         if (!this._events) this._events = Object.create(null);
         if (!this._events[event]) this._events[event] = listener;
         else {
@@ -104,13 +100,15 @@ class EventEmitter {
         else this._events = Object.create(null);
         return this;
     }
-}
 
-/** Representation of a single EventEmitter function. */
-class EE {
-    fn:Function = null; context:any = null; once:boolean = false;
-    constructor(fn:Function, context:any, once?:boolean) {
-        this.fn = fn; this.context = context; this.once = once || false;
+
+    EE(fn:Function, context:any, once?:boolean) {
+        return {
+            fn:fn,
+            context:context,
+            once:once || false
+        }
     }
 }
+
 export = EventEmitter;

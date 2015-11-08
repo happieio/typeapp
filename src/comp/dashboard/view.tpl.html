@@ -3,8 +3,15 @@
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header padding">
+        <h3>Couchbase Lite API Tests</h3>
         <br/>
         <button nav-direction="exit" on-tap="vm.navToContacts()">Go To Contacts</button>
+        <br/>
+        <h4>Test Output Monitor</h4>
+        <textarea data-tap-disabled="true" rows="10" style="width: 100%; border:2px solid dimgray;">{{vm.testOutput}}</textarea>
+        <br/>
+        <br/>
+        <button on-tap="vm.activeTasks()">Get Active Tasks</button>
         <br/>
         <br/>
         <button on-tap="vm.upsertDoc()">upsertDoc test</button>
@@ -21,7 +28,9 @@
         <br/>
         <button on-tap="vm.startTwoWayReplication()">twoWayReplication test</button>
 
-        <p style="width: 100%;">{{vm.testOutput}}</p>
+        <br/>
+        <br/>
+
 
 
     </ion-content>
