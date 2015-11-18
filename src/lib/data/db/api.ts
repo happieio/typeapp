@@ -60,19 +60,20 @@ class dalService {
     }
 
     startTwoWayReplication() {
-        return Promise.join(
-            this.db.replicateTo('ADD URL HERE', {continuous: true}),
-            this.db.replicateFrom('ADD YOUR URL HERE', {continuous: true}),
-            (replicateTo, replicateFrom) => { return {to: replicateTo, from: replicateFrom}; }
-        );
+        return this.db.replicateFrom('https://c0117eaecc204c0fb56cfee6a8bf9e98:12345678@dev-sync.jobnimbus.com/dfsj11wimapy1bf0', {continuous: true});
     }
 
     cancelTwoWayReplication(toId, fromId){
         return Promise.join(
             this.db.replicateTo('http://joeblack:apple@52.24.70.219/test', {replication_id:toId, cancel: true}),
-            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {replication_id:fromId, cancel: true}),
-            (replicateTo, replicateFrom) => { return {to: replicateTo, from: replicateFrom}; }
+            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {replication_id:fromId, cancel: true})
         );
+    }
+
+    getView(){
+        return this.db.query('view1/by_type',{startkey: '0.400606118934229', endkey:'0.8'})
+            .then((success)=> {return success;})
+            .catch((err)=> {return err;});
     }
 
     static angularModule = angular.module(dalService.moduleName, []).service(dalService.moduleName, dalService);

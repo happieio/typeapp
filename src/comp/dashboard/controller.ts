@@ -5,6 +5,8 @@ import lodash = require('lib/util/lodash');
 import contactState = require('app/state/contact');
 import dal = require('lib/data/db/api');
 
+declare var emit;
+
 class dashboardController {
     static moduleName = 'dashboardController';
     static templateUrl = 'comp/dashboard/view.tpl.html';
@@ -50,14 +52,19 @@ class dashboardController {
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    activeTasks(){
+    activeTasks() {
         this.dal.activeTasks()
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
     bulkDocs() {
-        this.dal.bulkDocs({docs: [{some: 'data', more: 123}, {some: 'data', more: 123}, {some: 'data', more: 123}]})
+        var array = [];
+        for(var i = 0; i < 2000; i++){
+            array.push({type: Math.random().toString(), more: 123})
+        }
+
+        this.dal.bulkDocs({docs: array})
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
@@ -68,8 +75,23 @@ class dashboardController {
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    cancelTwoWayReplication(){
-        this.dal.cancelTwoWayReplication({},{})
+    cancelTwoWayReplication() {
+        this.dal.cancelTwoWayReplication({}, {})
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
+    }
+
+    buildView() {
+        this.dal.upsertDoc({
+                _id: '_design/view1',
+                views: { by_type: { map: function mapFun(doc) {emit(doc.type);}.toString() } }
+            }, {})
+            .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
+            .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
+    }
+
+    getView(){
+        this.dal.getView()
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }

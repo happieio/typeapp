@@ -10,32 +10,34 @@ class cblDB {
         active: 'active', change: 'change', complete: 'complete', denied: 'denied', error: 'error', paused: 'paused'
     };
 
-    private dbUrl:string = '';
-    private serverUrl = '';
+    dbUrl:string = '';
+    localServerUrl = '';
+    syncUrl = '';
 
-    constructor(dbName:string) {
+    constructor(dbName:string, syncUrl?:string) {
         this.dbName = dbName.replace(/[^a-z0-9$_()+-/]/g, '');
+        this.syncUrl = syncUrl;
     }
 
-    initDB(remotePrimaryDB?:string) {
+    initDB(syncUrl?:string) {
         return new Promise((resolve, reject)=> {
 
-            if (remotePrimaryDB) {
-                this.serverUrl = remotePrimaryDB;
-                this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
+            if (syncUrl) {
+                this.syncUrl = syncUrl;
+                this.dbUrl = new URI(this.localServerUrl).directory(this.dbName).toString();
                 resolve('initialized remote CouchDB as the primary db for this instance');
             }
             else {
                 //get cbl server url
                 cbl.getServerURL((url)=> {
-                        this.serverUrl = url;
-                        this.dbUrl = new URI(this.serverUrl).directory(this.dbName).toString();
+                        this.localServerUrl = url;
+                        this.dbUrl = new URI(this.localServerUrl).directory(this.dbName).toString();
                         this.processRequest('PUT', this.dbUrl.toString(), null, null,
                             (err, response)=> {
                                 if (err.status = 412) resolve(err.response);
                                 else if (response.ok) resolve(true);
-                                else if (err) reject(cblDB.buildError('Error From DB PUT Request with status: ' + err.status, err));
-                                else reject(cblDB.buildError('Unknown Error From DB PUT Request', {
+                                else if (err) reject(this.buildError('Error From DB PUT Request with status: ' + err.status, err));
+                                else reject(this.buildError('Unknown Error From DB PUT Request', {
                                         res: response,
                                         err: err
                                     }));
@@ -49,10 +51,10 @@ class cblDB {
     activeTasks() {
         return new Promise((resolve, reject)=> {
             var verb = 'GET';
-            var uri = new URI(this.serverUrl).segment('_active_tasks');
+            var uri = new URI(this.localServerUrl).segment('_active_tasks');
             this.processRequest(verb, uri.toString(), null, null,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From activeTasks Request', err));
+                    if (err) reject(this.buildError('Error From activeTasks Request', err));
                     else resolve(success);
                 });
         });
@@ -61,17 +63,17 @@ class cblDB {
     allDocs(params?:cbl.IAllDocsParams) {
         return new Promise((resolve, reject)=> {
             var verb = 'GET';
-            var requestParams:cbl.IGetPostDbDesignViewName = <cbl.IGetPostDbDesignViewName>{};
+            var requestParams:cbl.IDbDesignViewName = <cbl.IDbDesignViewName>{};
             if (_.isArray(params.keys)) {
                 verb = 'POST';
                 requestParams.keys = params.keys;
             }
-            else requestParams = <cbl.IGetPostDbDesignViewName>_.assign(requestParams, params);
+            else requestParams = <cbl.IDbDesignViewName>_.assign(requestParams, params);
 
             var uri = new URI(this.dbUrl).segment('_all_docs').search(requestParams);
             this.processRequest(verb, uri.toString(), null, null,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From allDocs Request', err));
+                    if (err) reject(this.buildError('Error From allDocs Request', err));
                     else resolve(success);
                 });
         });
@@ -83,7 +85,7 @@ class cblDB {
             var uri = new URI(this.dbUrl).segment('_bulk_docs');
             this.processRequest('POST', uri.toString(), docs, headers,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From bulkDocs Request', err));
+                    if (err) reject(this.buildError('Error From bulkDocs Request', err));
                     else resolve(success);
                 })
         });
@@ -108,7 +110,7 @@ class cblDB {
                 };
                 return emitter;
             })
-            .catch((err)=> { cblDB.buildError('Error From changes request for db info', err) })
+            .catch((err)=> { this.buildError('Error From changes request for db info', err) })
     }
 
     compact() {
@@ -116,7 +118,7 @@ class cblDB {
             var uri = new URI(this.dbUrl).segment('_compact');
             this.processRequest('POST', uri.toString(), null, null,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From bulkDocs Request', err));
+                    if (err) reject(this.buildError('Error From bulkDocs Request', err));
                     else resolve(success);
                 });
         });
@@ -127,7 +129,7 @@ class cblDB {
             var uri = new URI(this.dbUrl);
             this.processRequest('DELETE', uri.toString(), null, null,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From bulkDocs Request', err));
+                    if (err) reject(this.buildError('Error From bulkDocs Request', err));
                     else resolve(success);
                 });
         });
@@ -144,7 +146,7 @@ class cblDB {
             }
             this.processRequest('GET', uri.toString(), null, headers,
                 (err, doc)=> {
-                    if (err) reject(cblDB.buildError('Error From GET Request', err));
+                    if (err) reject(this.buildError('Error From GET Request', err));
                     else resolve(doc);
                 });
         });
@@ -157,7 +159,7 @@ class cblDB {
 
             this.processRequest('GET', uri.toString(), null, null,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From bulkDocs Request', err));
+                    if (err) reject(this.buildError('Error From bulkDocs Request', err));
                     else resolve(success);
                 }, true);
         });
@@ -166,7 +168,17 @@ class cblDB {
     info() {
         return new Promise((resolve, reject)=> {
             this.processRequest('GET', this.dbUrl, null, null, (err, info)=> {
-                if (err) reject(cblDB.buildError('Error From db info Request', err));
+                if (err) reject(this.buildError('Error From db info Request', err));
+                else resolve(info);
+            });
+        });
+    }
+
+    infoRemote(remoteDBUrl?:string) {
+        return new Promise((resolve, reject)=> {
+            if (!remoteDBUrl) remoteDBUrl = this.syncUrl;
+            this.processRequest('GET', remoteDBUrl, null, null, (err, info)=> {
+                if (err) reject(this.buildError('Error From db info remote Request', err));
                 else resolve(info);
             });
         });
@@ -179,7 +191,7 @@ class cblDB {
             var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
             this.processRequest('POST', uri.toString(), doc, headers,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From POST Doc Request', err));
+                    if (err) reject(this.buildError('Error From POST Doc Request', err));
                     else resolve(success);
                 });
         });
@@ -188,7 +200,7 @@ class cblDB {
 
     put(doc:cbl.IDoc, params?:cbl.IBatchRevParams) {
         return new Promise((resolve, reject)=> {
-            if (!doc._id) reject(cblDB.buildError('doc does not have _id for PUT request', doc));
+            if (!doc._id) reject(this.buildError('doc does not have _id for PUT request', doc));
             var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
             var requestParams:cbl.IBatchRevParams = <cbl.IBatchRevParams>{};
             if (!params.rev) requestParams.rev = doc._rev;
@@ -197,7 +209,7 @@ class cblDB {
             var uri = new URI(this.dbUrl).segment(doc._id).search(requestParams);
             this.processRequest('PUT', uri.toString(), doc, headers,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From PUT Request: ensure doc or params is providing the rev if updating a doc', err));
+                    if (err) reject(this.buildError('Error From PUT Request: ensure doc or params is providing the rev if updating a doc', err));
                     else resolve(success);
                 });
         });
@@ -210,69 +222,92 @@ class cblDB {
             if (rev) uri.search({rev: rev});
             this.processRequest('PUT', uri.toString(), attachment, headers,
                 (err, success)=> {
-                    if (err) reject(cblDB.buildError('Error From PUT Attachment Request, if document exists ensure the rev is provided', err));
+                    if (err) reject(this.buildError('Error From PUT Attachment Request, if document exists ensure the rev is provided', err));
                     else resolve(success);
                 }, true);
         });
     }
 
-    query(view:string, params:cbl.IGetPostDbDesignViewName) {
+    query(view:string, params?:cbl.IDbDesignViewName) {
         return new Promise((resolve, reject)=> {
             var verb = 'GET';
+            var data = null;
             var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
+            var jsonParams = [];
             var viewParts = view.split('/');
-            var requestParams:cbl.IGetPostDbDesignViewName = <cbl.IGetPostDbDesignViewName>{};
-            if (params.keys) {
-                verb = 'POST';
-                requestParams.keys = params.keys;
+            var uri = new URI(this.dbUrl).segment('_design').segment(viewParts[0]).segment('_view').segment(viewParts[1]);
+            var fullURI = uri.toString();
+            var requestParams:cbl.IDbDesignViewName = <cbl.IDbDesignViewName>{};
+            if(params){
+                if (params.keys) {
+                    verb = 'POST';
+                    data = params;
+                }
+                else {
+                    requestParams = <cbl.IDbDesignViewName>_.assign(requestParams, params);
+                    requestParams.update_seq = true;
+                    if(params.key){
+                        jsonParams.push('key="' + params.key + '"');
+                        requestParams = _.omit(requestParams, 'key');
+                    }
+                    if(params.startkey || params.start_key){
+                        jsonParams.push('startkey="' + params.startkey + '"');
+                        requestParams = _.omit(requestParams, ['startkey','start_key']);
+                    }
+                    if(params.endkey || params.end_key){
+                        jsonParams.push('endkey="' + params.endkey + '"');
+                        requestParams = _.omit(requestParams, ['endkey','end_key']);
+                    }
+                    fullURI = uri.search(requestParams).toString();
+                    _.each(jsonParams, (param)=>{ fullURI += '&' + param; })
+                }
             }
-            else requestParams = <cbl.IGetPostDbDesignViewName>_.assign(requestParams, params);
-            var uri = new URI(this.dbUrl).segment('_design').segment(viewParts[0]).segment('_view').segment(viewParts[1]).search(requestParams);
-            this.processRequest(verb, uri.toString(), null, headers,
+
+            this.processRequest(verb, fullURI, data, headers,
                 (err, response)=> {
-                    if (err) reject(cblDB.buildError('Error From Query Request', err));
+                    if (err) reject(this.buildError('Error From Query Request', err));
                     else resolve(response);
                 });
         });
     }
 
-    replicateFrom(otherDB:string, bodyRequest:cbl.IPostReplicateParams) {
+    replicateFrom(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
         return new Promise((resolve, reject)=> {
-            bodyRequest = {source: this.dbName, target: otherDB};
-            var uri = new URI(this.serverUrl).segment('_replicate');
+            if (!otherDB && !this.syncUrl) reject(new Error('no sync url available to replicate from: ' + this.dbName));
+            bodyRequest = {source: this.dbName, target: otherDB ? otherDB : this.syncUrl, continuous: false};
+            var uri = new URI(this.localServerUrl).segment('_replicate');
             return this.processRequest('POST', uri.toString(), bodyRequest, null,
                 (err, response)=> {
-                    if (err) reject(cblDB.buildError('Error From replicate from Request', err));
+                    if (err) reject(this.buildError('Error From replicate from Request', err));
                     else resolve(response);
                 });
         });
-
     }
 
-    replicateTo(otherDB:string, bodyRequest:cbl.IPostReplicateParams) {
+    replicateTo(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
         return new Promise((resolve, reject)=> {
-            bodyRequest = {source: otherDB, target: this.dbName};
-            var uri = new URI(this.serverUrl).segment('_replicate');
+            if (!otherDB && !this.syncUrl) reject(new Error('no sync url available to replicate to: ' + this.dbName));
+            bodyRequest = {source: otherDB ? otherDB : this.syncUrl, target: this.dbName, continuous: false};
+            var uri = new URI(this.localServerUrl).segment('_replicate');
             this.processRequest('POST', uri.toString(), bodyRequest, null,
                 (err, response)=> {
-                    if (err) reject(cblDB.buildError('Error From replicate to Request', err));
+                    if (err) reject(this.buildError('Error From replicate to Request', err));
                     else resolve(response);
                 });
         });
-
     }
 
     remove(doc:cbl.IDoc, params?:cbl.IBatchRevParams) {
         return new Promise((resolve, reject)=> {
             var verb = 'DELETE';
             var requestParams:cbl.IBatchRevParams = <cbl.IBatchRevParams>{};
-            if (params) requestParams = <cbl.IGetPostDbDesignViewName>_.assign(requestParams, params);
+            if (params) requestParams = <cbl.IDbDesignViewName>_.assign(requestParams, params);
             if (!params.rev) requestParams.rev = doc._rev;
 
             var uri = new URI(this.dbUrl).segment(doc._id).search(requestParams);
             this.processRequest(verb, uri.toString(), null, null,
                 (err, response)=> {
-                    if (err) reject(cblDB.buildError('Error From remove Request', err));
+                    if (err) reject(this.buildError('Error From remove Request', err));
                     else resolve(response);
                 });
         });
@@ -284,7 +319,7 @@ class cblDB {
             var uri = new URI(this.dbUrl).segment(docId).segment(attachmentId).search({rev: rev});
             this.processRequest(verb, uri.toString(), null, null,
                 (err, response)=> {
-                    if (err) reject(cblDB.buildError('Error From remove Request', err));
+                    if (err) reject(this.buildError('Error From remove Request', err));
                     else resolve(response);
                 });
         });
@@ -292,7 +327,7 @@ class cblDB {
 
     revsDiff() {
         return new Promise((resolve, reject)=> {
-            reject(cblDB.buildError('revsDiff not implemented yet'));
+            reject(this.buildError('revsDiff not implemented yet'));
             /** TODO: NEEDS IMPLEMENTATION */
         });
     }
@@ -300,10 +335,10 @@ class cblDB {
     upsert(doc:cbl.IDoc, params?:cbl.IBatchRevParams) {
         return new Promise((resolve, reject)=> {
             var put = (upsertDoc) => {
-                if (!upsertDoc._id) reject(cblDB.buildError('doc does not have _id for Upsert request', doc));
+                if (!upsertDoc._id) reject(this.buildError('doc does not have _id for Upsert request', doc));
                 this.processRequest('PUT', uri.toString(), upsertDoc, headers,
                     (err, success)=> {
-                        if (err) reject(cblDB.buildError('Error From Upsert Request', err));
+                        if (err) reject(this.buildError('Error From Upsert Request', err));
                         else resolve(success);
                     });
             };
@@ -332,19 +367,20 @@ class cblDB {
 
     viewCleanup() {
         return new Promise((resolve, reject)=> {
-            reject(cblDB.buildError('viewCleanup not implemented yet'));
+            reject(this.buildError('viewCleanup not implemented yet'));
             /** TODO: NEEDS IMPLEMENTATION */
         });
     }
 
-    private static buildError(msg:string, err?) {
+    buildError(msg:string, err?) {
         var error:any = new Error(msg);
         if (_.isObject(err))error = _.assign(error, err);
         else if (err) error.errorValue = err;
+        error.dbName = this.dbName;
         return error;
     }
 
-    private processRequest(verb:string, url:string, data:Object, headers:Object, cb:Function, isAttach?:boolean):void {
+    processRequest(verb:string, url:string, data:Object, headers:Object, cb:Function, isAttach?:boolean):void {
         var http = new XMLHttpRequest();
         http.open(verb, url, true);
         if (headers) _.forOwn(headers, (value, key)=> { http.setRequestHeader(key, value); });
