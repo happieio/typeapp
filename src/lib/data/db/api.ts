@@ -60,13 +60,17 @@ class dalService {
     }
 
     startTwoWayReplication() {
-        return this.db.replicateFrom('https://c0117eaecc204c0fb56cfee6a8bf9e98:12345678@dev-sync.jobnimbus.com/dfsj11wimapy1bf0', {continuous: true});
+        return Promise.join(
+            this.db.replicateFrom(null,'YOUR_SYNC_GATEWAY_URL_HERE'),
+            this.db.replicateTo(null, 'YOUR_SYNC_GATEWAY_URL_HERE')
+        )
+
     }
 
     cancelTwoWayReplication(toId, fromId){
         return Promise.join(
-            this.db.replicateTo('http://joeblack:apple@52.24.70.219/test', {replication_id:toId, cancel: true}),
-            this.db.replicateFrom('http://joeblack:apple@52.24.70.219/test', {replication_id:fromId, cancel: true})
+            this.db.replicateTo({replication_id:toId, cancel: true}, 'http://joeblack:apple@52.24.70.219/test'),
+            this.db.replicateFrom({replication_id:fromId, cancel: true}, 'http://joeblack:apple@52.24.70.219/test')
         );
     }
 
