@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.TypeApp" version="1.0.0" ios-CFBundleVersion="1" android-versionCode="1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.TypeApp" version="0.1.2" ios-CFBundleVersion="1" android-versionCode="1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>TypeApp</name>
   <description>
         TypeSafe Ionic Development
@@ -26,6 +26,6 @@
   </platform>
   <platform name="ios">
   </platform>
-  <engine name="android" spec="4.0.0"/>
+  <engine name="android" spec="5.0.0"/>
   <engine name="ios" spec="3.9.0"/>
 </widget>
