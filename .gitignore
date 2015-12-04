@@ -3,7 +3,8 @@
 
 node_modules/
 platforms/
-plugins/
+plugins/**
+!src/typedefs/cordova/plugins/**
 www/
 src/-vendor/
 .idea/
