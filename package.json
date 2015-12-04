@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "cordova": "5.1.1",
-    "execSync": "*",
     "gulp": "*",
     "gulp-concat": "*",
     "gulp-dest": "^0.2.2",
@@ -32,7 +31,8 @@
     "requirejs": "^2.1.20",
     "run-sequence": "^1.1.0",
     "shell": "0.3.2",
-    "shelljs": "^0.4.0"
+    "shelljs": "^0.4.0",
+    "typescript": "1.6.2"
   },
   "devDependencies": {
     "amdclean": "^2.7.0",

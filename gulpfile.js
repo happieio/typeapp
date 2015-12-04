@@ -53,6 +53,13 @@ gulp.task('reset', function () {
     return runSequence('cordova:reset', 'default');
 });
 
+gulp.task('ts:compile', function () {
+    console.log('____________STARTING TS COMPILE_____________');
+    gulp.src('').pipe(shell(['./node_modules/.bin/tsc -p ./']));
+    console.log('____________COMPILE COMPLETE, RETURNED TO APP ROOT_____________ : ' + __dirname);
+    return true;
+});
+
 gulp.task('default', function () {
     var cb = function () {
         return gulp.src('').pipe(exit());
