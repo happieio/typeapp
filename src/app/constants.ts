@@ -79,8 +79,6 @@ class constants {
     static vendorModules = {
         angularLocalStorage: 'angularLocalStorage',
         ngCordova: 'ngCordova',
-        ngLocale: 'ngLocale',
-        ngMessages: 'ngMessages',
         uiRouter: 'ui.router'
     };
 

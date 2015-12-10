@@ -15,7 +15,7 @@ class contactDetailsController {
     $ionicHistory;
     $state;
 
-    static $injector = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory, con.ng.$state];
+    static $inject = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory, con.ng.$state];
 
     constructor($scope, $stateParams, $ionicHistory, $state) {
         this.$scope = $scope;

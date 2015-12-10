@@ -25,7 +25,7 @@ class contactController {
     _: _.LoDashStatic;
     $state: angular.ui.IStateService;
 
-    static $injector = [con.ng.$scope, lodash.moduleName, con.ng.$state];
+    static $inject = [con.ng.$scope, lodash.moduleName, con.ng.$state];
     constructor($scope, _, $state) {
         this.$scope = $scope;
         this._ = _;

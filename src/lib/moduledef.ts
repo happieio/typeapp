@@ -9,7 +9,7 @@ import data = require('lib/data/moduledef');
 class coreLib {
     static moduleName = 'comp.lib';
 
-    static jnLib = angular.module(coreLib.moduleName, [
+    static coreLib = angular.module(coreLib.moduleName, [
     utilities.moduleName,
     filters.moduleName,
     directives.moduleName,

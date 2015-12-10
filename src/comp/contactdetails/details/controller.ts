@@ -12,7 +12,7 @@ class contactDetailsController {
     $stateParams;
     $ionicHistory;
 
-    static $injector = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory];
+    static $inject = [con.ng.$scope, con.ng.$stateParams, con.ionic.$ionicHistory];
 
     constructor($scope, $stateParams, $ionicHistory) {
         this.$scope = $scope;
