@@ -1,4 +1,4 @@
-/**@class jnContactCtrl
+/**@class contactController
  * @classdesc manages data gathered by  {@link jnContactDataService} functions for constructing board data. This data is then
  * provided to [jnBoard]{@link module:jnBoard} for building the board directive. Hover zones
  * are also managed in the controller through event calls to {@Link jnLibIonSlideService}.
