@@ -6,7 +6,7 @@ import ContactController = require('comp/contact/controller');
 class Contact {
 
     static state:angular.ui.IState = {
-        name: 'app.contact',
+        name: ContactController.stateName,
         parent: app.state,
         cache: true,
         url: '/contact',

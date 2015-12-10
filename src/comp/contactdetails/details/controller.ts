@@ -4,6 +4,7 @@ import con = require('app/constants');
 
 class contactDetailsController {
     static moduleName = 'contactDetailsDetailsController';
+    static stateName = 'app.contactDetailsDetails';
     static templateUrl = 'comp/contactdetails/details/view.tpl.html';
 
     name;

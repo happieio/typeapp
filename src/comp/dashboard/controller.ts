@@ -9,6 +9,7 @@ declare var emit;
 
 class dashboardController {
     static moduleName = 'dashboardController';
+    static stateName =  'app.dashboard';
     static templateUrl = 'comp/dashboard/view.tpl.html';
 
     private testOutput = 'run a test';
