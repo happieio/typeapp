@@ -2,7 +2,7 @@
 import con = require('app/constants');
 
 class vendorComponents {
-    static moduleName = 'jn.vendor.components';
+    static moduleName = 'vendor.components';
 
     static vendorModule = angular.module(vendorComponents.moduleName, [
         con.ionic.ionic,

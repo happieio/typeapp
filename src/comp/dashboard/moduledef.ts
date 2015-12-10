@@ -3,7 +3,7 @@
 import dashController = require('comp/dashboard/controller');
 
 class Dashboard {
-    static moduleName =  'jn.dashboard';
+    static moduleName =  'comp.dashboard';
 
     static angularMember = angular.module(Dashboard.moduleName, [
         dashController.moduleName

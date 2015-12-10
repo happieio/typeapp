@@ -6,7 +6,7 @@ import detailsController = require('comp/contactdetails/details/controller');
 import con = require('app/constants')
 
 class contactDetails {
-    static moduleName =  'jn.contactDetails';
+    static moduleName =  'comp.contactDetails';
 
     static angularMember = angular.module(contactDetails.moduleName, [
         controller.moduleName,

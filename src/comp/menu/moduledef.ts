@@ -3,7 +3,7 @@
 import menuController = require('comp/menu/controller');
 
 class menu {
-    static moduleName = 'jn.menu';
+    static moduleName = 'comp.menu';
 
     static angularMember = angular.module(menu.moduleName, [
         menuController.moduleName

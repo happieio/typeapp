@@ -6,10 +6,10 @@ import directives = require('lib/directives/moduledef');
 import data = require('lib/data/moduledef');
 
 
-class jnLib {
-    static moduleName = 'jn.lib';
+class coreLib {
+    static moduleName = 'comp.lib';
 
-    static jnLib = angular.module(jnLib.moduleName, [
+    static jnLib = angular.module(coreLib.moduleName, [
     utilities.moduleName,
     filters.moduleName,
     directives.moduleName,
@@ -18,7 +18,7 @@ class jnLib {
 
 }
 
-export = jnLib;
+export = coreLib;
 
 
 
