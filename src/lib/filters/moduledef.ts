@@ -1,6 +1,6 @@
 /// <reference path="../../typedefs/tsd.d.ts" />
 
-import filterHelpers = require('lib/filters/filterHelpers');
+import filterHelpers = require('lib/filters/filterhelpers');
 
 class jnLibFilter {
     static moduleName = 'jnLib.filters';
