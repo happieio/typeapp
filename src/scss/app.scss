@@ -38,3 +38,8 @@ $ionicons-font-path: "../-vendor/ionicons/fonts" !default;
 "../comp/main",
 "../lib/directives/def"
 ;
+
+.bar.bar-header{
+  background-image: none;
+  border-bottom-width: 0 !important;
+}

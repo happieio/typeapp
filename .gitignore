@@ -8,5 +8,6 @@ plugins/**
 www/
 src/-vendor/
 .idea/
-srcCompiled/
+srcCompiled/**/*
+!srcCompiled/README.md
 src/**/*.js

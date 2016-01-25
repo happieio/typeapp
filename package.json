@@ -42,7 +42,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "app-init": "sudo npm install -g cordova ionic; sudo npm install -g gulp; sudo npm install -bower; sudo npm update; bower update; gulp cordova:reset gulp default"
+    "app-init": "sudo npm install -g cordova ionic; sudo npm install -g gulp; sudo npm install -bower; sudo npm update; bower update; gulp cordova:reset; gulp default"
   },
   "cordovaPlugins": [
     "com.ionic.keyboard",
