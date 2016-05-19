@@ -9,7 +9,7 @@ declare var emit;
 
 class dashboardController {
     static moduleName = 'dashboardController';
-    static stateName =  'app.dashboard';
+    static stateName = 'app.dashboard';
     static templateUrl = 'comp/dashboard/view.tpl.html';
 
     private testOutput = 'run a test';
@@ -61,8 +61,10 @@ class dashboardController {
 
     bulkDocs() {
         var array = [];
-        for(var i = 0; i < 2000; i++){
-            array.push({type: Math.random().toString(), more: 123})
+        for (var i = 0; i < 2000; i++) {
+            var typeT = '';
+            if (i % 2 === 0) typeT = 'even'; else typeT = 'odd';
+            array.push({type: typeT, more: 123})
         }
 
         this.dal.bulkDocs({docs: array})
@@ -84,15 +86,22 @@ class dashboardController {
 
     buildView() {
         this.dal.upsertDoc({
-                _id: '_design/view1',
-                views: { by_type: { map: function mapFun(doc) {emit(doc.type);}.toString() } }
+                "_id": "_design/view1",
+                "language" : "javascript",
+                "views": {
+                    "by_type": {
+                        "map": function (doc) {
+                            emit(doc.type, null);
+                        }.toString()
+                    }
+                }
             }, {})
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }
 
-    getView(){
-        this.dal.getView()
+    getView() {
+        this.dal.getView('view1/by_type', {})
             .then((success)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(success, null, '\t')}); })
             .catch((err)=> { this.$scope.$applyAsync(()=> {this.testOutput = JSON.stringify(err)}); });
     }

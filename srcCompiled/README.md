@@ -1,1 +1,0 @@
-This directory is an intermediary for RequireJS to build and bundle the app JS file.

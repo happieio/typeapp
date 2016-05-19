@@ -1,10 +1,13 @@
+/// <reference path="../../../../typedefs/tsd.d.ts" />
 ///<reference path="typedefs/cblsubtypes.d.ts" />
 
-import Emitter = require('lib/data/db/cblemitter');
+import Emitter = require('./cblemitter');
+import IActiveTaskArray = cbl.IActiveTaskArray;
 
 class cblDB {
 
     dbName = '';
+    lastChange = 0;
 
     static eventTypes = {
         active: 'active', change: 'change', complete: 'complete', denied: 'denied', error: 'error', paused: 'paused'
@@ -19,30 +22,24 @@ class cblDB {
         this.syncUrl = syncUrl;
     }
 
-    initDB(serverUrl?:string) {
+    initDB(syncUrl?:string) {
         return new Promise((resolve, reject)=> {
-            if (serverUrl) {
-                this.localServerUrl = serverUrl;
-                this.dbUrl = new URI(this.localServerUrl).directory(this.dbName).toString();
-                resolve('initialized remote CouchDB as the primary db for this instance');
-            }
-            else {
-                cbl.getServerURL((url)=> {
-                        this.localServerUrl = url;
-                        this.dbUrl = new URI(this.localServerUrl).directory(this.dbName).toString();
-                        this.processRequest('PUT', this.dbUrl.toString(), null, null,
-                            (err, response)=> {
-                                if (err.status = 412) resolve(err.response);
-                                else if (response.ok) resolve(true);
-                                else if (err) reject(this.buildError('Error From DB PUT Request with status: ' + err.status, err));
-                                else reject(this.buildError('Unknown Error From DB PUT Request', {
-                                        res: response,
-                                        err: err
-                                    }));
-                            });
-                    },
-                    (err)=> {throw new Error(err); });
-            }
+            if (syncUrl) this.syncUrl = syncUrl;
+            cbl.getServerURL((url)=> {
+                    this.localServerUrl = url;
+                    this.dbUrl = new URI(this.localServerUrl).directory(this.dbName).toString();
+                    this.processRequest('PUT', this.dbUrl.toString(), null, null,
+                        (err, response)=> {
+                            if (err.status == 412) resolve(err.response);
+                            else if (response.ok) resolve(true);
+                            else if (err) reject(this.buildError('Error From DB PUT Request with status: ' + err.status, err));
+                            else reject(this.buildError('Unknown Error From DB PUT Request', {
+                                    res: response,
+                                    err: err
+                                }));
+                        });
+                },
+                (err)=> {throw new Error(err); });
         });
     }
 
@@ -62,14 +59,13 @@ class cblDB {
         return new Promise((resolve, reject)=> {
             var verb = 'GET';
             var requestParams:cbl.IDbDesignViewName = <cbl.IDbDesignViewName>{};
-            if (_.isArray(params.keys)) {
+            if (params.keys) {
                 verb = 'POST';
-                requestParams.keys = params.keys;
             }
             else requestParams = <cbl.IDbDesignViewName>_.assign(requestParams, params);
 
             var uri = new URI(this.dbUrl).segment('_all_docs').search(requestParams);
-            this.processRequest(verb, uri.toString(), null, null,
+            this.processRequest(verb, uri.toString(), params, null,
                 (err, success)=> {
                     if (err) reject(this.buildError('Error From allDocs Request', err));
                     else resolve(success);
@@ -79,11 +75,10 @@ class cblDB {
 
     bulkDocs(docs:cbl.IPostDbBulkDocs) {
         return new Promise((resolve, reject)=> {
-            var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
             var uri = new URI(this.dbUrl).segment('_bulk_docs');
-            this.processRequest('POST', uri.toString(), docs, headers,
+            this.processRequest('POST', uri.toString(), docs, null,
                 (err, success)=> {
-                    if (err) reject(this.buildError('Error From bulkDocs Request', err));
+                    if (err) reject(this.buildError('Error From bulkDocs Request, ensure docs array is in request', err));
                     else resolve(success);
                 })
         });
@@ -92,21 +87,38 @@ class cblDB {
     changes(params?:cbl.IGetDbChangesParams):Promise<void> {
         return this.info()
             .then((info:cbl.IGetDbChangesResponse)=> {
-                if (params.since === 'now') params.since = info.committed_update_seq;
+                if(this.lastChange === 0) this.lastChange = info.update_seq > 0 ? info.update_seq - 1 : 0;
+                if (params.since === 'now') {
+                    params.since = this.lastChange;
+                }
+                this.lastChange = info.update_seq;
 
-                if (!params)params = {feed: 'eventsource'};
-                else params.feed = 'eventsource';
-                var emitter = new Emitter();
+                /* EventSource Style changes, when android supports event source properly turn this on
+                 if (!params)params = {feed: 'eventsource'};
+                 else params.feed = 'eventsource';
+                 var emitter = new Emitter();
+                 var uri = new URI(this.dbUrl).segment('_changes').search(params);
+                 var source = new EventSource(uri.toString());
+                 source.onerror = (e) => { emitter.emit('error', JSON.parse(e.data)); };
+                 source.onmessage = (e) => {emitter.emit('change', JSON.parse(e.data)); };
+                 emitter.cancel = () => {
+                 source.close();
+                 emitter.emit('complete');
+                 emitter.removeAllListeners();
+                 };
+                 return emitter;
+                 */
+
+                if (!params)params = {feed: 'normal'};
+                else params.feed = 'normal';
                 var uri = new URI(this.dbUrl).segment('_changes').search(params);
-                var source = new EventSource(uri.toString());
-                source.onerror = (e) => { emitter.emit('error', JSON.parse(e.data)); };
-                source.onmessage = (e) => {emitter.emit('change', JSON.parse(e.data)); };
-                emitter.cancel = () => {
-                    source.close();
-                    emitter.emit('complete');
-                    emitter.removeAllListeners();
-                };
-                return emitter;
+                return new Promise((resolve, reject)=>{
+                    this.processRequest('GET', uri.toString(), null, null,
+                        (err, success)=> {
+                            if (err) reject(this.buildError('Error From _changes request', err));
+                            else resolve(success);
+                        });
+                })
             })
             .catch((err)=> { this.buildError('Error From changes request for db info', err) })
     }
@@ -201,8 +213,10 @@ class cblDB {
             if (!doc._id) reject(this.buildError('doc does not have _id for PUT request', doc));
             var headers:cbl.IHeaders = {'Content-Type': 'application/json'};
             var requestParams:cbl.IBatchRevParams = <cbl.IBatchRevParams>{};
-            if (!params.rev) requestParams.rev = doc._rev;
-            if (params) requestParams = <cbl.IBatchRevParams>_.assign(requestParams, params);
+            if (params) {
+                if (!params.rev) requestParams.rev = doc._rev;
+                requestParams = <cbl.IBatchRevParams>_.assign(requestParams, params);
+            }
 
             var uri = new URI(this.dbUrl).segment(doc._id).search(requestParams);
             this.processRequest('PUT', uri.toString(), doc, headers,
@@ -236,28 +250,36 @@ class cblDB {
             var uri = new URI(this.dbUrl).segment('_design').segment(viewParts[0]).segment('_view').segment(viewParts[1]);
             var fullURI = uri.toString();
             var requestParams:cbl.IDbDesignViewName = <cbl.IDbDesignViewName>{};
-            if (params) {
+            if(params){
                 if (params.keys) {
                     verb = 'POST';
                     data = params;
                 }
                 else {
+                    if(params.start_key) params.startkey = params.start_key;
+                    if(params.end_key) params.endkey = params.end_key;
                     requestParams = <cbl.IDbDesignViewName>_.assign(requestParams, params);
                     requestParams.update_seq = true;
-                    if (params.key) {
-                        jsonParams.push('key="' + params.key + '"');
+                    if(params.key){
+                        if(_.isArray(params.key)) jsonParams.push('key=' + JSON.stringify(params.key));
+                        else if(_.isString) jsonParams.push('key="' + params.key + '"');
+                        else if(_.isNumber) jsonParams.push('key=' + params.key);
                         requestParams = _.omit(requestParams, 'key');
                     }
-                    if (params.startkey || params.start_key) {
-                        jsonParams.push('startkey="' + params.startkey + '"');
-                        requestParams = _.omit(requestParams, ['startkey', 'start_key']);
+                    if(params.startkey){
+                        if(_.isArray(params.startkey)) jsonParams.push('startkey=' + JSON.stringify(params.startkey));
+                        else if(_.isString) jsonParams.push('startkey="' + params.startkey + '"');
+                        else if(_.isNumber) jsonParams.push('startkey=' + params.startkey);
+                        requestParams = _.omit(requestParams, ['startkey','start_key']);
                     }
-                    if (params.endkey || params.end_key) {
-                        jsonParams.push('endkey="' + params.endkey + '"');
-                        requestParams = _.omit(requestParams, ['endkey', 'end_key']);
+                    if(params.endkey){
+                        if(_.isArray(params.endkey)) jsonParams.push('endkey=' + JSON.stringify(params.endkey));
+                        else if(_.isString) jsonParams.push('endkey="' + params.endkey + '"');
+                        else if(_.isNumber) jsonParams.push('endkey=' + params.endkey);
+                        requestParams = _.omit(requestParams, ['endkey','end_key']);
                     }
                     fullURI = uri.search(requestParams).toString();
-                    _.each(jsonParams, (param)=> { fullURI += '&' + param; })
+                    _.each(jsonParams, (param)=>{ fullURI += '&' + param; })
                 }
             }
 
@@ -269,12 +291,12 @@ class cblDB {
         });
     }
 
-    replicateFrom(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
+    replicateTo(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
         return new Promise((resolve, reject)=> {
             if (!otherDB && !this.syncUrl) reject(new Error('no sync url available to replicate from: ' + this.dbName));
             bodyRequest = {source: this.dbName, target: otherDB ? otherDB : this.syncUrl, continuous: false};
             var uri = new URI(this.localServerUrl).segment('_replicate');
-            return this.processRequest('POST', uri.toString(), bodyRequest, null,
+            this.processRequest('POST', uri.toString(), bodyRequest, null,
                 (err, response)=> {
                     if (err) reject(this.buildError('Error From replicate from Request', err));
                     else resolve(response);
@@ -282,7 +304,7 @@ class cblDB {
         });
     }
 
-    replicateTo(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
+    replicateFrom(bodyRequest?:cbl.IPostReplicateParams, otherDB?:string) {
         return new Promise((resolve, reject)=> {
             if (!otherDB && !this.syncUrl) reject(new Error('no sync url available to replicate to: ' + this.dbName));
             bodyRequest = {source: otherDB ? otherDB : this.syncUrl, target: this.dbName, continuous: false};
@@ -378,7 +400,7 @@ class cblDB {
         return error;
     }
 
-    processRequest(verb:string, url:string, data:Object, headers:Object, cb:Function, isAttach?:boolean):void {
+    processRequest(verb:string, url:string, data:any, headers:Object, cb:Function, isAttach?:boolean):void {
         var http = new XMLHttpRequest();
         http.open(verb, url, true);
         if (headers) _.forOwn(headers, (value:any, key)=> { http.setRequestHeader(key, value); });
@@ -388,7 +410,7 @@ class cblDB {
         http.onreadystatechange = () => {
             if (http.readyState == 4 && http.status >= 200 && http.status <= 299) {
                 if (isAttach) cb(false, http.response);
-                else cb(false, JSON.parse(http.responseText));
+                else cb(false, JSON.parse(http.responseText), http);
             }
             else if (http.readyState == 4 && http.status >= 300) cb({status: http.status, response: http.responseText});
         };
