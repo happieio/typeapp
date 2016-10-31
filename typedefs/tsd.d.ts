@@ -1,1 +1,0 @@
-/// <reference path="../src/typedefs/tsd.d.ts" />

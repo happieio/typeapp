@@ -1,8 +1,0 @@
-{
-  "name": "TypeApp",
-  "app_id": "",
-  "gulpStartupTasks": [],
-  "watchPatterns": [
-    "www/**/*"
-  ]
-}
